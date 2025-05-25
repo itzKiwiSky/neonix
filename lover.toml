@@ -1,0 +1,13 @@
+[package]
+name = "my amazing game"
+description = "Look mom I made a game"
+author = "yourAmazingCompany"
+version = "0.0.1"
+icon = "game/icon.png"
+
+[build]
+default = ["love", "win64"]
+
+[directories]
+source = "game"
+build = "build"

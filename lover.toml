@@ -1,12 +1,12 @@
 [package]
-name = "my amazing game"
-description = "Look mom I made a game"
-author = "yourAmazingCompany"
+name = "Neonix!"
+description = "Neonix! game"
+author = "KiwiStation"
 version = "0.0.1"
 icon = "game/icon.png"
 
 [build]
-default = ["love", "win64"]
+default = ["love", "win64", "linux"]
 
 [directories]
 source = "game"

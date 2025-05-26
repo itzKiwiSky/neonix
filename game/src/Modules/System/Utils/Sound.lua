@@ -11,6 +11,7 @@ Sound.defaultVolume = 1
 Sound.defaultPanning = 0
 Sound.sources = {}      -- is for my use, you can pass all the source objects in this list --
 Sound.channels = {}
+Sound.sourceList = {}
 
 local SoundQueue = {}
 SoundQueue.__index = SoundQueue
@@ -69,14 +70,16 @@ function SoundChannel.new(id, sourceName)
 end
 
 function SoundChannel:loadSource(sourceName)
-    assert(Sound.sources[sourceName] ~= nil, ("[ERROR] The audio source named: '%s' is not loaded"):format(sourceName))
-    self.source = Sound.sources[sourceName]
+    assert(Sound.sourceList[sourceName] ~= nil, ("[ERROR] The audio source named: '%s' is not loaded"):format(sourceName))
+    self.source = Sound.sourceList[sourceName]
     self.audioChannels = self.source:getChannelCount()
 end
 
 function SoundChannel:play()
     if self.source then
-        self.source:play()
+        if not self.source:isPlaying() then
+            self.source:play()
+        end
     end
 end
 

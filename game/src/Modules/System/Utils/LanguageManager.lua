@@ -10,7 +10,7 @@ local function _findKey(_tblInput, _tblOutput)
     end
 end
 
-function LanguageManager:getData(_language)
+function LanguageManager.getData(_language)
     local data = {}
 
     local tempdata = json.decode(love.filesystem.read("assets/data/language/" .. _language .. ".lang"))
@@ -18,7 +18,7 @@ function LanguageManager:getData(_language)
     return data
 end
 
-function LanguageManager:getRawData(_language)
+function LanguageManager.getRawData(_language)
     return json.decode(love.filesystem.read("assets/data/language/" .. _language .. ".lang"))
 end
 

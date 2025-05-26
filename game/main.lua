@@ -1,7 +1,24 @@
 require('src.Modules.System.Run')
 
+local function preloadAudio(target)
+    --local files = fsutil.scanFolder("assets/sounds/Tracks", false)
+    local files = love.filesystem.getDirectoryItems("assets/sounds/Tracks")
+
+    for f = 1, #files, 1 do
+        local filename = (((files[f]:lower()):gsub(" ", "_")):gsub("%.[^.]+$", "")):match("[^/]+$")
+        loveloader.newSource(target, filename, "assets/sounds/Tracks/" .. files[f], "stream")
+        if FEATURE_FLAGS.debug then
+            io.printf(string.format("{bgBrightMagenta}{brightCyan}{bold}[LOVE]{reset}{brightWhite} : Audio file queue to load with {brightGreen}sucess{reset} | {bold}{underline}{brightYellow}%s{reset}\n", filename))
+        end
+    end
+end
+
 function love.initialize()
+    SoundManager = require 'src.Modules.System.Utils.Sound'
+    SoundManager.sourceList = {}
     local save = require 'src.Modules.System.Utils.Save'
+
+    preloadAudio(SoundManager.sourceList)
 
     gameSave = save.new("game")
 
@@ -27,10 +44,8 @@ function love.initialize()
                     username = "",
                     usertoken = ""
                 },
-                subtitles = true,
                 discordRichPresence = true,
                 gamepadSupport = false,
-                cacheNight = false,
             }
             }
         }
@@ -39,6 +54,18 @@ function love.initialize()
     gameSave:initialize()
 
     registers = {}
+
+    loveloader.start(function()
+        AUDIO_LOADED = true
+    end, function(k, h, n)
+        if FEATURE_FLAGS.debug then
+            io.printf(string.format("{bgBrightMagenta}{brightCyan}{bold}[LOVE]{reset}{brightWhite} : Audio file loaded with {brightGreen}sucess{reset} | {bold}{underline}{brightYellow}%s{reset}\n", n))
+        end
+    end)
+
+
+    local languageManager = require 'src.Modules.System.Utils.LanguageManager'
+    languageService = languageManager.getData(gameSave.save.user.settings.misc.language)
 
     -- autoload states --
     local states = love.filesystem.getDirectoryItems("src/Scenes")
@@ -53,5 +80,5 @@ function love.initialize()
     end
 
     gamestate.registerEvents()
-    gamestate.switch(SplashState)
+    gamestate.switch(LoadingState)
 end

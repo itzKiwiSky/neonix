@@ -31,6 +31,7 @@ function TitleState:enter()
 
     self.Conductor.bpm = 91 / 2
 
+    --[[
     if not self.futureBaseTheme then
         self.futureBaseTheme = love.audio.newSource("assets/sounds/Tracks/future_base.ogg", "stream")
     end
@@ -39,7 +40,16 @@ function TitleState:enter()
     if not self.futureBaseTheme:isPlaying() then
         self.futureBaseTheme:play()
     end
-    
+    ]]--
+
+    self.song = SoundManager.newChannel("mainMenu")
+    self.song:loadSource("future_base")
+    if not self.song.source:isPlaying() then
+        self.song:play()
+        self.song:setLooping(true)
+        self.song:setVolume(gameSave.save.user.settings.audio.musicVolume)
+    end
+
     self.spvzmenu = self.SpectrumVisualizer:new("assets/sounds/Tracks/future_base.ogg", 1024, 32)
     
     self.fogGlowFx = self.Fog(love.graphics.newImage("assets/images/menus/glow.png"))
@@ -114,15 +124,11 @@ end
 
 function TitleState:update(elapsed)
     self.time = self.time + elapsed
-    self.Conductor.songPos = (self.futureBaseTheme:tell() * 1000)
+    self.Conductor.songPos = (self.song.source:tell() * 1000)
     self.Conductor:update(elapsed)
 
-    if not self.futureBaseTheme:isPlaying() then
-        self.futureBaseTheme:play()
-    end
-
-    if self.futureBaseTheme:isPlaying() then
-        self.spvzmenu:update(elapsed, self.futureBaseTheme)
+    if self.song.source:isPlaying() then
+        self.spvzmenu:update(elapsed, self.song.source)
     end
 
     self.menuCam.y = self.menuCam.y + math.cos(self.time) / 2 + 0.1 * elapsed

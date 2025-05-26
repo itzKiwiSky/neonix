@@ -6,7 +6,7 @@ json = require 'src.Modules.System.Utils.JSON'
 class = require 'src.Modules.System.Utils.Classic'
 
 love._FPSCap = 1000
-love._unfocusedFPSCap = 20
+love._unfocusedFPSCap = 60
 
 local modes = love.window.getFullscreenModes()
 table.sort(modes, function(a, b) return a.width * a.height > b.width * b.height end) -- Ordena da maior para a menor
@@ -58,7 +58,7 @@ local function copyLib()
 end
 
 function love.run()
-    FEATURE_FLAGS = require 'game.src.Modules.System.FeatureFlags'
+    FEATURE_FLAGS = require 'src.Modules.System.FeatureFlags'
 
     love.keys = {}
     love.keys.videoStats = getKeys()

@@ -45,7 +45,7 @@ function MenuState:enter()
         }
     }
 
-    self.menuCam = camera(love.graphics.getWidth() / 2, -love.graphics.getHeight() - 512)
+    self.menuCam = camera(shove.getViewportWidth() / 2, -shove.getViewportHeight() - 512)
 
     self.menuIcons = {
         normal = love.graphics.newImage("assets/images/menus/selectionNormal.png"),
@@ -100,7 +100,35 @@ function MenuState:enter()
                 alpha = 0,
                 color = {1, 1, 1}
             }
-        }
+        },
+        {
+            icon = self.menuIcons.browseHub,
+            name = "editor",
+            title = languageService["menu_selection_editor_hub_browse"],
+            selected = false,
+            sizeMulti = 0,
+            textAlpha = 0,
+            changeState = EditorMenuState,
+            lock = {
+                locked = false,
+                alpha = 0,
+                color = {1, 1, 1}
+            }
+        },
+        {
+            icon = self.menuIcons.savedLevels,
+            name = "editor",
+            title = languageService["menu_selection_editor_hub_saved"],
+            selected = false,
+            sizeMulti = 0,
+            textAlpha = 0,
+            changeState = EditorMenuState,
+            lock = {
+                locked = false,
+                alpha = 0,
+                color = {1, 1, 1}
+            }
+        },
     }
 
     self.sunRotation = 0
@@ -114,7 +142,7 @@ function MenuState:enter()
     self.leaveCamAnimTransitionRunning = false
 
     self.enterCamTweenGroup = flux.group()
-    self.enterCamTween = self.enterCamTweenGroup:to(self.menuCam, 3, {y = love.graphics.getHeight() / 2})
+    self.enterCamTween = self.enterCamTweenGroup:to(self.menuCam, 3, {y = shove.getViewportHeight() / 2})
     self.enterCamTween:ease("backout")
     self.enterCamTween:oncomplete(function()
         self.enterCamAnimTransitionRunning = false
@@ -122,7 +150,7 @@ function MenuState:enter()
 
 
     self.leaveCamTweenGroup = flux.group()
-    self.leaveCamTween = self.leaveCamTweenGroup:to(self.menuCam, 1.6, {x = -(love.graphics.getWidth() + 512)})
+    self.leaveCamTween = self.leaveCamTweenGroup:to(self.menuCam, 1.6, {x = -(shove.getViewportWidth() + 512)})
     self.leaveCamTween:ease("backin")
     self.leaveCamTween:oncomplete(function()
         self.leaveCamAnimTransitionRunning = false
@@ -133,28 +161,25 @@ end
 function MenuState:draw()
     self.menuCam:attach()
         love.graphics.setBlendMode("add")
-        love.graphics.draw(self.MenuBGP, love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
-        love.graphics.draw(self.sunGlow, love.graphics.getWidth() / 2, love.graphics.getHeight() / 2, 0, self.sunBG:getWidth() / self.sunGlow:getWidth(), self.sunBG:getHeight() / self.sunGlow:getHeight(), self.sunGlow:getWidth() / 2, self.sunGlow:getHeight() / 2)
+        love.graphics.draw(self.MenuBGP, shove.getViewportWidth() / 2, shove.getViewportHeight() / 2)
+        love.graphics.draw(self.sunGlow, shove.getViewportWidth() / 2, shove.getViewportHeight() / 2, 0, self.sunBG:getWidth() / self.sunGlow:getWidth(), self.sunBG:getHeight() / self.sunGlow:getHeight(), self.sunGlow:getWidth() / 2, self.sunGlow:getHeight() / 2)
         love.graphics.setBlendMode("alpha")
-        love.graphics.draw(self.sunBG, love.graphics.getWidth() / 2, love.graphics.getHeight() / 2, 0, 0.55, 0.55, self.sunBG:getWidth() / 2, self.sunBG:getHeight() / 2)
+        love.graphics.draw(self.sunBG, shove.getViewportWidth() / 2, shove.getViewportHeight() / 2, 0, 0.55, 0.55, self.sunBG:getWidth() / 2, self.sunBG:getHeight() / 2)
 
-        love.graphics.printf(languageService["menu_selection_title"], self.f_menuSelection, 0, 96, love.graphics.getWidth(), "center")
+        love.graphics.printf(languageService["menu_selection_title"], self.f_menuSelection, 0, 96, shove.getViewportWidth(), "center")
 
         local centerX = shove.getViewportWidth() / 2
         local centerY = shove.getViewportHeight() / 2
-        local spacing = 256
+        local spacing = 300
 
         for i = 1, #self.menuContent, 1 do
             local dist = i - 1 - self.scroll
 
-            -- posição x alinhada horizontalmente
             local x = centerX + dist * spacing
             local y = centerY
 
-            -- efeito de escala baseado na distância
             local scale = 0.5 - math.min(math.abs(dist) * 0.15, 0.05)
 
-            -- destaque no selecionado
             local selected = math.floor(self.scroll + 0.5) == (i - 1)
             love.graphics.setColor({
                 selected and 1 or 0.4, 
@@ -171,7 +196,9 @@ function MenuState:draw()
             --love.graphics.printf(self.menuContent[i].name, x - 100, y - 8, 200, "center")
         end
 
-        --love.graphics.rectangle("fill", optionBoxX, love.graphics.getHeight() / 2 - 256 / 2, 256, 256, 15)
+        love.graphics.printf(self.menuContent[self.scrollTarget + 1].title, self.f_optionDesc, 0, shove.getViewportHeight() - 200, shove.getViewportWidth(), "center")
+
+        --love.graphics.rectangle("fill", optionBoxX, shove.getViewportHeight() / 2 - 256 / 2, 256, 256, 15)
     self.menuCam:detach()
 
     love.graphics.setColor(1, 1, 1, 1)

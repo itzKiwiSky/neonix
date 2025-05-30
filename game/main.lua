@@ -53,7 +53,30 @@ function love.initialize()
 
     gameSave:initialize()
 
-    registers = {}
+    registers = {
+        user = {
+            roundStarted = false,
+            paused = false,
+        },
+        system = {
+            showDebugHitbox = false,
+            gameTime = 0,
+            editor = {
+                fileDialogOpen = false,
+                fileDialogSave = false,
+                metaDataWindow = false,
+                addNewColorChannel = false,
+                newColorChannelTag = "",
+                colorChannelColorPicker = false,
+                colorChannelCreateCurrentColor = {1, 1, 1, 1},
+                editColorChannelPicker = false,
+                currentKey = 0,
+                currentSelectedLevelID = 0,
+                saveName = "",
+                useCustomSongFlag = false,
+            }
+        }
+    }
 
     loveloader.start(function()
         AUDIO_LOADED = true
@@ -78,6 +101,11 @@ function love.initialize()
         local inside, mx, my = shove.mouseToViewport()
         return mx, my
     end
+
+    love.filesystem.createDirectory("user")
+    love.filesystem.createDirectory("user/editor")
+    love.filesystem.createDirectory("user/saved")
+    love.filesystem.createDirectory("user/songs")
 
     gamestate.registerEvents()
     gamestate.switch(LoadingState)

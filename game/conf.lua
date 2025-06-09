@@ -3,7 +3,7 @@ function love.conf(w)
     w.window.width          =       1280
     w.window.height         =       768
     w.window.icon           =       "icon.png"
-    w.window.title          =       "mood&Co"
+    w.window.title          =       "Neonix!"
     w.window.x              =       nil
     w.window.y              =       nil
     w.window.borderless     =       false

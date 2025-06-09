@@ -97,10 +97,12 @@ function love.initialize()
     end
 
     oldGetPosition = love.mouse.getPosition
-    love.mouse.getPosition = function()
+    oldGetWidth, oldGetHeight, oldGetDimensions = love.graphics.getWidth, love.graphics.getHeight, love.graphics.getDimensions
+    function love.mouse.getPosition()
         local inside, mx, my = shove.mouseToViewport()
         return mx, my
     end
+
 
     love.filesystem.createDirectory("user")
     love.filesystem.createDirectory("user/editor")

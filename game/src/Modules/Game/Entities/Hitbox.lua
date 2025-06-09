@@ -1,0 +1,4 @@
+return {
+    ["tile"] = {},
+    ["hazard"] = {},
+}

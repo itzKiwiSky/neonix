@@ -35,13 +35,13 @@ return function()
             end
             slab.Separator()
             if slab.MenuItem("Rotate left") then
-                Editor.data.angle = Editor.data.angle + 90
+                Editor.Editor.data.angle = Editor.Editor.data.angle + 90
             end
             if slab.MenuItem("Rotate right") then
-                Editor.data.angle = Editor.data.angle - 90
+                Editor.Editor.data.angle = Editor.Editor.data.angle - 90
             end
-            if slab.MenuItem("Swipe" .. (Editor.flags.swipeMode and " [ON]" or " [OFF]")) then
-                Editor.flags.swipeMode = not Editor.flags.swipeMode
+            if slab.MenuItem("Swipe" .. (Editor.Editor.flags.swipeMode and " [ON]" or " [OFF]")) then
+                Editor.Editor.flags.swipeMode = not Editor.Editor.flags.swipeMode
             end
             slab.EndMenu()
         end
@@ -50,8 +50,8 @@ return function()
             if slab.MenuItem("Metadata settings") then
                 registers.system.editor.metaDataWindow = true
             end
-            if slab.MenuItem("Show hitbox" .. (Editor.flags.showHitbox and " [ON]" or " [OFF]")) then
-                Editor.flags.showHitbox = not Editor.flags.showHitbox
+            if slab.MenuItem("Show hitbox" .. (Editor.Editor.flags.showHitbox and " [ON]" or " [OFF]")) then
+                Editor.Editor.flags.showHitbox = not Editor.Editor.flags.showHitbox
             end
             slab.Separator()
             if slab.MenuItem("clear above ground") then

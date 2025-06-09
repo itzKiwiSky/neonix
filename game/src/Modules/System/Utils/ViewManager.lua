@@ -1,7 +1,7 @@
 local ViewManager = {}
 ViewManager.views = {}
 
-ViewManager.currentActiveView = ""
+ViewManager.currentActiveView = "default"
 
 function ViewManager.clear()
     loveframes.RemoveAll()

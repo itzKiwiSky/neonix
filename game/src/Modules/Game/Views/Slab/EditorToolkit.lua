@@ -5,7 +5,8 @@ local types = {
 }
 
 return function()
-    slab.BeginWindow("toolboxWindow", { Title = "", X = 0, Y = shove.getViewportHeight() - 128, W = shove.getViewportWidth(), H = 128, AutoSizeWindow = false, AllowResize = false, AllowMove = false })
+    --local x, y, w, h = shove.getViewport()
+    slab.BeginWindow("toolboxWindow", { Title = "Toolbox", X = 0, Y = shove.getViewportHeight() - 128, W = shove.getViewportWidth(), H = 128, AutoSizeWindow = false, AllowResize = false, AllowMove = false })
         slab.BeginLayout("toolboxLayoutItems", { AnchorX = true, Columns = 2 })
             slab.SetLayoutColumn(1)
             if slab.Button("Build mode") then
@@ -18,23 +19,25 @@ return function()
             if EditorState.Editor.data.objType == "none" then 
                 for t = 1, #types, 1 do
                     if EditorState.assets[types[t]] then
-                        local qx, qy, qw, qh = EditorState.assets[types[t]].quads[1]:getViewport()
-                        slab.Image("tileCatDisp" .. t, {
-                            Image = EditorState.assets[types[t]].img,
-                            SubX = qx,
-                            SubY = qy,
-                            SubW = qw,
-                            SubH = qh,
-                            W = 32,
-                            H = 32,
-                        })
-    
-                        if t % 32 ~= 0 then
-                            slab.SameLine()
-                        end
-    
-                        if slab.IsControlClicked() then
-                            EditorState.Editor.data.objType = types[t]
+                        if EditorState.assets[types[t]].quads[1] then
+                            local qx, qy, qw, qh = EditorState.assets[types[t]].quads[1]:getViewport()
+                            slab.Image("tileCatDisp" .. t, {
+                                Image = EditorState.assets[types[t]].img,
+                                SubX = qx,
+                                SubY = qy,
+                                SubW = qw,
+                                SubH = qh,
+                                W = 32,
+                                H = 32,
+                            })
+        
+                            if t % 32 ~= 0 then
+                                slab.SameLine()
+                            end
+        
+                            if slab.IsControlClicked() then
+                                EditorState.Editor.data.objType = types[t]
+                            end
                         end
                     end
                 end
@@ -54,6 +57,7 @@ return function()
                             SubH = qh,
                             W = 32,
                             H = 32,
+                            Color = EditorState.Editor.data.objID == o and {0.45, 0.45, 0.45, 1} or {1, 1, 1, 1}
                         })
         
                         if o % 32 ~= 0 then

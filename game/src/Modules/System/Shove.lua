@@ -1,3 +1,5 @@
+local love_graphics_getDimensions = love.graphics.getDimensions
+
 ---@class ShoveState
 ---@field fitMethod "aspect"|"pixel"|"stretch"|"none" Scaling method
 ---@field renderMode "direct"|"layer" Rendering approach
@@ -1044,7 +1046,7 @@ local state = {
   
       state.viewport_width = width
       state.viewport_height = height
-      state.screen_width, state.screen_height = love.graphics.getDimensions()
+      state.screen_width, state.screen_height = love_graphics_getDimensions()
   
       if settingsTable then
         state.fitMethod = settingsTable.fitMethod or "aspect"
@@ -1115,7 +1117,7 @@ local state = {
       if success then
         -- Only call resize if we're already initialized
         if state.viewport_width > 0 and state.viewport_height > 0 then
-          local actualWidth, actualHeight = love.graphics.getDimensions()
+          local actualWidth, actualHeight = love_graphics_getDimensions()
           shove.resize(actualWidth, actualHeight)
         end
       end
@@ -1146,7 +1148,7 @@ local state = {
   
       if success then
         -- Get the actual dimensions (might differ from requested)
-        local actualWidth, actualHeight = love.graphics.getDimensions()
+        local actualWidth, actualHeight = love_graphics_getDimensions()
         shove.resize(actualWidth, actualHeight)
       end
   

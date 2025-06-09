@@ -16,6 +16,33 @@ return function()
         types = { "tile", "hazard", "trigger" }
     }
 
+    local function imgButtonNoteSkin(object)
+
+        local skin = object:GetSkin()
+        local x = object:GetX()
+        local y = object:GetY()
+        local width = object:GetWidth()
+        local height = object:GetHeight()
+        local text = object:GetText()
+        local hover = object:GetHover()
+        local image = object:GetImage()
+        local imagecolor = object.imagecolor or skin.controls.color_image
+        local down = object.down
+        local font = object:GetFont() or skin.controls.imagebuttonfont
+        local twidth = font:getWidth(object.text)
+        local theight = font:getHeight(object.text)
+        local checked = object.checked
+        local quad = object.quad
+
+        love.graphics.setColor(imagecolor)
+        if quad then
+            _, _, w, h = quad:getViewport()
+            love.graphics.draw(image, quad, x, y, 0, width / w, height / h)
+        else
+            love.graphics.draw(image, x, y, 0, width / image:getWidth(), height / image:getHeight())
+        end
+    end
+
     local panelWindow = loveframes.Create("panel")
     panelWindow:SetSize(shove.getViewportWidth(), 164)
     panelWindow:SetY(shove.getViewportHeight() - panelWindow:GetHeight())
@@ -65,5 +92,9 @@ return function()
     imageDeco:SetX(shove.getViewportWidth() * 0.165)
     imageDeco:SetScale(16, panelWindow:GetHeight())
 
+    local panelObjects = loveframes.Create("panel")
+    panelObjects:SetPos(panelWindow:GetWidth() * 0.18 - panelObjects.x, panelWindow.y)
+    panelObjects:SetSize(panelWindow:GetWidth() - panelObjects.x, 164)
+    panelObjects.drawfunc = settings.blank
 
 end

@@ -255,13 +255,23 @@ function EditorState:update(elapsed)
                         ))
                     end
                 end
-            elseif love.mouse.isDown(2) then
-                if _isHover(self.Editor.data.mouse.x + 16, self.Editor.data.mouse.y + 16) then
-                    _removeAt(self.Editor.data.mouse.x + 16, self.Editor.data.mouse.y + 16)
+            elseif love.mouse.isDown(1) then
+                if self.Editor.data.currentEditorMode == "delete" then
+                    if _isHover(self.Editor.data.mouse.x + 16, self.Editor.data.mouse.y + 16) then
+                        _removeAt(self.Editor.data.mouse.x + 16, self.Editor.data.mouse.y + 16)
+                    end
                 end
             end
         end
     end
+end
+
+function EditorState:mousepressed(x, y, button)
+    self.Editor.components.viewManager.mousepressed(x, y, button)
+end
+
+function EditorState:mousereleased(x, y, button)
+    self.Editor.components.viewManager.mousereleased(x, y, button)
 end
 
 function EditorState:keypressed(k)

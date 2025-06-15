@@ -16,9 +16,8 @@ return function(levelname)
             levelid = 0,
         },
         level = {
-            startPos = {0, 0},
-            endPos = {256, 0},
-            groundY = 0,
+            startPos = {640 - 16, 384 - 16},
+            endPos = {1584, 384 - 16},
             bgID = 1,
             colorChannels = {
                 ["bg"] = {60 / 255, 205 / 255, 168 / 255},

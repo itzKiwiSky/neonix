@@ -49,6 +49,16 @@ local function _removeAt(this, x, y)
     end
 end
 
+local function _selectAt(this, x, y)
+    for _, o in pairs(this.editorLevelData.objects) do
+        if o.x == x then
+            if o.y == y then
+                o.meta.selected = true
+            end
+        end
+    end
+end
+
 local function _onScreen(obj, cam)
     local camX, camY = cam.x, cam.y
     viewportW, viewportH = shove.getViewportDimensions()
@@ -76,7 +86,8 @@ function EditorState:enter()
         },
         objects = {
             tile = require 'src.Modules.Game.Objects.Tiles',
-            hazard = require 'src.Modules.Game.Objects.Hazards'
+            hazard = require 'src.Modules.Game.Objects.Hazards',
+            trigger = require 'src.Modules.Game.Objects.Triggers',
         },
         data = {},
         flags = {
@@ -123,7 +134,6 @@ function EditorState:enter()
     self.Editor.data.toolboxState = {
         currentTab = 1
     }
-
 
     self.mouse = {
         x = 0,
@@ -230,6 +240,22 @@ function EditorState:draw()
             end
         end
 
+        local qx, qy, qw, qh = self.assets["trigger"].quads[10]:getViewport()
+        love.graphics.draw(
+            self.assets["trigger"].img, self.assets["trigger"].quads[10], 
+            self.editorLevelData.level.startPos[1], 
+            self.editorLevelData.level.startPos[2],
+            0, 1, 1, qw / 2, qh / 2
+        )
+
+        local qx, qy, qw, qh = self.assets["trigger"].quads[11]:getViewport()
+        love.graphics.draw(
+            self.assets["trigger"].img, self.assets["trigger"].quads[11], 
+            self.editorLevelData.level.endPos[1], 
+            self.editorLevelData.level.endPos[2],
+            0, 1, 1, qw / 2, qh / 2
+        )
+
 
         love.graphics.setColor(1, 0, 1)
             love.graphics.setLineWidth(8)
@@ -249,21 +275,41 @@ function EditorState:draw()
     self.Editor.components.viewManager.draw()
 end
 
-local function _build(self)
+local function _action(self)
     if self.Editor.data.canEdit and self.Editor.data.objType ~= "none" then
         if love.mouse.isDown(1) and self.Editor.data.currentEditorMode == "build" then
             if not _isHover(self, self.Editor.data.mouse.x + 16, self.Editor.data.mouse.y + 16) then
-                if self.Editor.objects[self.Editor.data.objType] then
-                    table.insert(self.editorLevelData.objects, self.Editor.objects[self.Editor.data.objType](
-                        self.Editor.data.objID, self.Editor.data.mouse.x + 16, 
-                        self.Editor.data.mouse.y + 16, self.Editor.data.angle, true
-                    ))
+                if self.Editor.data.objType == "trigger" and self.Editor.data.objID == 10 or self.Editor.data.objID == 11 then
+                    if self.Editor.data.objID == 10 then
+                        self.editorLevelData.level.startPos = { self.Editor.data.mouse.x + 16, self.Editor.data.mouse.y + 16 }
+                        return
+                    end
+                    if self.Editor.data.objID == 11 then
+                        self.editorLevelData.level.endPos = { self.Editor.data.mouse.x + 16, self.Editor.data.mouse.y + 16 }
+                        return
+                    end
+                else
+                    if self.Editor.objects[self.Editor.data.objType] then
+                        table.insert(self.editorLevelData.objects, self.Editor.objects[self.Editor.data.objType](
+                            self.Editor.data.objID, self.Editor.data.mouse.x + 16, 
+                            self.Editor.data.mouse.y + 16, self.Editor.data.angle, true
+                        ))
+                    end
                 end
             end
         elseif love.mouse.isDown(1) then
             if self.Editor.data.currentEditorMode == "delete" then
                 if _isHover(self, self.Editor.data.mouse.x + 16, self.Editor.data.mouse.y + 16) then
                     _removeAt(self, self.Editor.data.mouse.x + 16, self.Editor.data.mouse.y + 16)
+                end
+            end
+        elseif love.mouse.isDown(1) and not self.Editor.data.swipeMode then
+            if self.Editor.data.currentEditorMode == "edit" then
+                if _isHover(self, self.Editor.data.mouse.x + 16, self.Editor.data.mouse.y + 16) then
+                    for _, o in pairs(this.editorLevelData.objects) do
+                        o.meta.selected = false
+                    end
+                    _selectAt(self, self.Editor.data.mouse.x + 16, self.Editor.data.mouse.y + 16)
                 end
             end
         end
@@ -291,7 +337,7 @@ function EditorState:update(elapsed)
 
     --self.Editor.data.selectionArea.visible = love.mouse.isDown(1)
     if self.Editor.flags.swipeMode then
-        _build(self)
+        _action(self)
     end
 end
 
@@ -299,12 +345,7 @@ end
 function EditorState:mousepressed(x, y, button)
     self.Editor.components.viewManager.mousepressed(x, y, button)
     if not self.Editor.flags.swipeMode then
-        _build(self)
-    end
-    if self.Editor.data.currentEditorMode == "edit" then
-        if love.keyboard.isDown("lctrl") and button == 1 then
-            
-        end
+        _action(self)
     end
 end
 

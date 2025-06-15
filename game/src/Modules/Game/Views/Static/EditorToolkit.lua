@@ -129,7 +129,6 @@ return function()
             btn:SetSize(40, 40)
             btn.OnClick = function(obj)
                 editorState.Editor.data.objID = i
-                print(i)
             end
             btn.drawfunc = imgButtonNoteSkin
 

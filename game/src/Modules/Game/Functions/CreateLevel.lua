@@ -4,7 +4,7 @@ return function(levelname)
             title = levelname or "Unnamed level",
             gameversion = 0,
             requestedDifficulty = 0, -- int range 1 -> 5
-            songid = "builtin:dubnix",   -- it now uses protocol parse to identify song source
+            songid = "builtin:none",   -- it now uses protocol parse to identify song source
             bgConfig = {
                 bgFactor = {
                     x = 0.5,
@@ -12,11 +12,12 @@ return function(levelname)
                 },
                 bgOffsetX = 0,
                 bgOffsetY = 256
-            }
+            },
+            levelid = 0,
         },
         level = {
             startPos = {0, 0},
-            endPos = 256,
+            endPos = {256, 0},
             groundY = 0,
             bgID = 1,
             colorChannels = {

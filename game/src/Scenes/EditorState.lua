@@ -67,6 +67,8 @@ function EditorState:enter()
     slab.Initialize({"NoDocks"})
     love.graphics.pop()
 
+    loveframes.SetActiveSkin("Dark blue")
+
     self.Editor = {
         components = {
             createLevel = require 'src.Modules.Game.Functions.CreateLevel',
@@ -74,6 +76,7 @@ function EditorState:enter()
         },
         objects = {
             tile = require 'src.Modules.Game.Objects.Tiles',
+            hazard = require 'src.Modules.Game.Objects.Hazards'
         },
         data = {},
         flags = {
@@ -227,8 +230,21 @@ function EditorState:draw()
             end
         end
 
-        --love.graphics.rectangle("line", self.mouse.x, self.mouse.y, )
+
+        love.graphics.setColor(1, 0, 1)
+            love.graphics.setLineWidth(8)
+                love.graphics.rectangle("line", self.Editor.data.mouse.x, self.Editor.data.mouse.y, 32, 32)
+        love.graphics.setColor(0, 1, 1)
+            love.graphics.setLineWidth(3)
+                love.graphics.rectangle("line", self.Editor.data.mouse.x, self.Editor.data.mouse.y, 32, 32)
+            love.graphics.setLineWidth(1)
+        love.graphics.setColor(1, 1, 1)
     self.editorCamera:detach()
+
+    love.graphics.print(([[
+    CurrentState: %s
+    swipeMode: %s
+    ]]):format(self.Editor.data.currentEditorMode, self.Editor.flags.swipeMode), 10, 32)
 
     self.Editor.components.viewManager.draw()
 end
@@ -285,6 +301,11 @@ function EditorState:mousepressed(x, y, button)
     if not self.Editor.flags.swipeMode then
         _build(self)
     end
+    if self.Editor.data.currentEditorMode == "edit" then
+        if love.keyboard.isDown("lctrl") and button == 1 then
+            
+        end
+    end
 end
 
 function EditorState:mousereleased(x, y, button)
@@ -292,15 +313,18 @@ function EditorState:mousereleased(x, y, button)
 end
 
 function EditorState:keypressed(k)
+    local modes = {"build", "edit", "delete"}
     self.Editor.components.viewManager.keypressed(k)
     if k == "q" then
         self.Editor.data.angle = self.Editor.data.angle - 90
-    end
-    if k == "e" then
+    elseif k == "e" then
         self.Editor.data.angle = self.Editor.data.angle + 90
-    end
-    if k == "t" then
+    elseif k == "t" then
         self.Editor.flags.swipeMode = not self.Editor.flags.swipeMode
+    else
+        if modes[tonumber(k)] then
+            self.Editor.data.currentEditorMode = modes[tonumber(k)]
+        end
     end
 
     --[[if k == "delete" then

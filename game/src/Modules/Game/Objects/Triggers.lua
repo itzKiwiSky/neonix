@@ -1,5 +1,5 @@
-local _hitbox = require 'src.Components.Modules.Game.Objects.Hitbox'
-local _object = require 'src.Components.Modules.Game.Objects.Object'
+local _hitbox = require 'game.src.Modules.Game.Objects.Hitbox'
+local _object = require 'src.Modules.Game.Objects.Object'
 
 return function(id, x, y, angle, collision)
     local o = _object(x, y, angle)
@@ -19,7 +19,7 @@ return function(id, x, y, angle, collision)
             o.properties.channelTarget = {}
             o.properties.targetColor = {1, 1, 1, 1}
             o.properties.fadeTime = 0
-        end
+        end,
     })
 
     return o

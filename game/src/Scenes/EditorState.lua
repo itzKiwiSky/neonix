@@ -1,28 +1,35 @@
 EditorState = {}
 
 local function _drawStaticGrid(camera, cellSize)
-    local screenW, screenH = shove.getViewportDimensions()
-    local scale = camera.scale
-    local camX, camY = camera:position()
+    -- Obter dimensões da tela
+    local screenWidth, screenHeight = love.graphics.getDimensions()
 
-    local step = cellSize * scale
+    -- Ajustar o tamanho das células da grade com base no zoom
+    local adjustedCellSize = cellSize * camera.scale
 
-    local offsetX = (camX * scale) % step
-    local offsetY = (camY * scale) % step
+    -- Calcular a posição inicial da grade para o alinhamento com a câmera
+    local startX = math.floor(camera.x / adjustedCellSize) * adjustedCellSize
+    local startY = math.floor(camera.y / adjustedCellSize) * adjustedCellSize
 
-    love.graphics.setColor(1, 1, 1, 0.35)
+    -- Definir a cor da grade (RGBA)
+    love.graphics.setColor(1, 1, 1, 0.3)
 
-    for x = -offsetX, screenW, step do
-        love.graphics.line(x, 0, x, screenH)
+    -- Desenhar as linhas verticais
+    for x = startX, camera.x + screenWidth, adjustedCellSize do
+        love.graphics.line(x - camera.x, 0, x - camera.x, screenHeight)
     end
 
-    for y = -offsetY, screenH, step do
-        love.graphics.line(0, y, screenW, y)
+    -- Desenhar as linhas horizontais
+    for y = startY, camera.y + screenHeight, adjustedCellSize do
+        love.graphics.line(0, y - camera.y, screenWidth, y - camera.y)
     end
+
+    -- Resetar cor para o padrão
+    love.graphics.setColor(1, 1, 1, 1)
 end
 
-local function _isHover(x, y)
-    for _, o in pairs(editorLevelData.objects) do
+local function _isHover(this, x, y)
+    for _, o in pairs(this.editorLevelData.objects) do
         if o.x == x then
             if o.y == y then
                 return true
@@ -32,11 +39,11 @@ local function _isHover(x, y)
     return false
 end
 
-local function _removeAt(x, y)
-    for _, o in pairs(editorLevelData.objects) do
+local function _removeAt(this, x, y)
+    for _, o in pairs(this.editorLevelData.objects) do
         if o.x == x then
             if o.y == y then
-                table.remove(editorLevelData.objects, _)
+                table.remove(this.editorLevelData.objects, _)
             end
         end
     end
@@ -63,15 +70,15 @@ function EditorState:enter()
     self.Editor = {
         components = {
             createLevel = require 'src.Modules.Game.Functions.CreateLevel',
-            viewManager = require 'src.Modules.System.Utils.ViewManager'
+            viewManager = require 'src.Modules.System.Utils.ViewManager',
         },
-        objects = {},
-        data = {
-            objType = "tile"
+        objects = {
+            tile = require 'src.Modules.Game.Objects.Tiles',
         },
+        data = {},
         flags = {
             swipeMode = false,
-            showHitbox = false
+            showHitbox = false,
         },
     }
 
@@ -89,8 +96,8 @@ function EditorState:enter()
     self.Editor.data.objects = {}
     self.Editor.data.levelPath = ""
     self.Editor.data.canEdit = false
-    self.Editor.data.objType = "none"
-    self.Editor.data.currentEditorMode = "append"
+    self.Editor.data.objType = "tile"
+    self.Editor.data.currentEditorMode = "build"
     self.Editor.data.objID = 1
     self.Editor.data.angle = 0
     self.Editor.data.selectionArea = {
@@ -163,7 +170,7 @@ function EditorState:draw()
             love.graphics.setColor(1, 1, 1, 1)
         end
     end
-    _drawStaticGrid(self.editorCamera, 64)
+    _drawStaticGrid(self.editorCamera, 32)
     self.editorCamera:attach()
         for _, o in pairs(self.editorLevelData.objects) do
             if o.meta.selected then
@@ -199,7 +206,7 @@ function EditorState:draw()
             if o.hitbox then
                 switch(o.hitbox.type, {
                     ["solid"] = function()
-                        if Editor.flags.showHitbox then
+                        if self.Editor.flags.showHitbox then
                             love.graphics.setColor(0, 0, 1, 0.6)
                                 love.graphics.rectangle("fill", o.hitbox.x, o.hitbox.y, o.hitbox.w, o.hitbox.h)
                             love.graphics.setColor(0, 0, 1, 1)
@@ -208,7 +215,7 @@ function EditorState:draw()
                         end
                     end,
                     ["hazard"] = function()
-                        if Editor.flags.showHitbox then
+                        if self.Editor.flags.showHitbox then
                             love.graphics.setColor(1, 0, 0, 0.6)
                                 love.graphics.rectangle("fill", o.hitbox.x, o.hitbox.y, o.hitbox.w, o.hitbox.h)
                             love.graphics.setColor(1, 0, 0, 1)
@@ -219,9 +226,32 @@ function EditorState:draw()
                 })
             end
         end
+
+        --love.graphics.rectangle("line", self.mouse.x, self.mouse.y, )
     self.editorCamera:detach()
 
     self.Editor.components.viewManager.draw()
+end
+
+local function _build(self)
+    if self.Editor.data.canEdit and self.Editor.data.objType ~= "none" then
+        if love.mouse.isDown(1) and self.Editor.data.currentEditorMode == "build" then
+            if not _isHover(self, self.Editor.data.mouse.x + 16, self.Editor.data.mouse.y + 16) then
+                if self.Editor.objects[self.Editor.data.objType] then
+                    table.insert(self.editorLevelData.objects, self.Editor.objects[self.Editor.data.objType](
+                        self.Editor.data.objID, self.Editor.data.mouse.x + 16, 
+                        self.Editor.data.mouse.y + 16, self.Editor.data.angle, true
+                    ))
+                end
+            end
+        elseif love.mouse.isDown(1) then
+            if self.Editor.data.currentEditorMode == "delete" then
+                if _isHover(self, self.Editor.data.mouse.x + 16, self.Editor.data.mouse.y + 16) then
+                    _removeAt(self, self.Editor.data.mouse.x + 16, self.Editor.data.mouse.y + 16)
+                end
+            end
+        end
+    end
 end
 
 function EditorState:update(elapsed)
@@ -230,10 +260,10 @@ function EditorState:update(elapsed)
 
     local inside, mx, my = shove.mouseToViewport()
     local mx, my = self.editorCamera:worldCoords(mx, my)
-    self.mouse.x = math.floor(mx / 32) * 32
-    self.mouse.y = math.floor(my / 32) * 32
+    self.Editor.data.mouse.x = math.floor(mx / 32) * 32
+    self.Editor.data.mouse.y = math.floor(my / 32) * 32
 
-    self.editorCamera.scale = math.lerp(self.editorCamera.scale, self.editorCamera.targetZoom, 0.0075)
+    self.editorCamera.scale = math.lerp(self.editorCamera.scale, self.editorCamera.targetZoom, 0.075)
     if self.editorCamera.scale > 3 then
         self.editorCamera.targetZoom = 3
     end
@@ -241,33 +271,20 @@ function EditorState:update(elapsed)
         self.editorCamera.targetZoom = 0.5
     end
 
+    self.Editor.data.canEdit = not loveframes.GetHover()
 
-    self.Editor.data.selectionArea.visible = love.mouse.isDown(1)
-
+    --self.Editor.data.selectionArea.visible = love.mouse.isDown(1)
     if self.Editor.flags.swipeMode then
-        if self.Editor.data.canEdit and self.Editor.data.objType ~= "none" and self.Editor.data.currentEditorMode == "append" then
-            if love.mouse.isDown(1) then
-                if not _isHover(self.Editor.data.mouse.x + 16, self.Editor.data.mouse.y + 16) then
-                    if self.Editor.objects[self.Editor.data.objType] then
-                        table.insert(self.editorLevelData.objects, self.Editor.objects[self.Editor.data.objType](
-                            self.Editor.data.objID, self.Editor.data.mouse.x + 16, 
-                            self.Editor.data.mouse.y + 16, self.Editor.data.angle, true
-                        ))
-                    end
-                end
-            elseif love.mouse.isDown(1) then
-                if self.Editor.data.currentEditorMode == "delete" then
-                    if _isHover(self.Editor.data.mouse.x + 16, self.Editor.data.mouse.y + 16) then
-                        _removeAt(self.Editor.data.mouse.x + 16, self.Editor.data.mouse.y + 16)
-                    end
-                end
-            end
-        end
+        _build(self)
     end
 end
 
+
 function EditorState:mousepressed(x, y, button)
     self.Editor.components.viewManager.mousepressed(x, y, button)
+    if not self.Editor.flags.swipeMode then
+        _build(self)
+    end
 end
 
 function EditorState:mousereleased(x, y, button)
@@ -285,6 +302,7 @@ function EditorState:keypressed(k)
     if k == "t" then
         self.Editor.flags.swipeMode = not self.Editor.flags.swipeMode
     end
+
     --[[if k == "delete" then
         if Editor.data.currentEditorMode == "edit" then
             for i = #editorLevelData.objects, 1, -1 do
@@ -314,11 +332,11 @@ function EditorState:textinput(t)
 end
 
 function EditorState:wheelmoved(x, y)
-    if y < 0 then
-        self.editorCamera.targetZoom = self.editorCamera.targetZoom - 0.05
-    elseif y > 0 then
-        self.editorCamera.targetZoom = self.editorCamera.targetZoom + 0.05
-    end
+    --if y < 0 then
+    --    self.editorCamera.targetZoom = self.editorCamera.targetZoom - 0.05
+    --elseif y > 0 then
+    --    self.editorCamera.targetZoom = self.editorCamera.targetZoom + 0.05
+    --end
 end
 
 return EditorState

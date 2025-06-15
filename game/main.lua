@@ -96,6 +96,7 @@ function love.initialize()
         require("src.Scenes." .. states[s]:gsub(".lua", ""))
     end
 
+    -- some shit --
     oldGetPosition = love.mouse.getPosition
     oldGetWidth, oldGetHeight, oldGetDimensions = love.graphics.getWidth, love.graphics.getHeight, love.graphics.getDimensions
     function love.mouse.getPosition()

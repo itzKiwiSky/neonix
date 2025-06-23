@@ -69,7 +69,6 @@ local function _onScreen(obj, cam)
 
     local objRight  = (obj.x) + obj.hitbox.w
     local objBottom = (obj.y) + obj.hitbox.h
-
 end
 
 function EditorState:enter()
@@ -141,6 +140,7 @@ function EditorState:enter()
     }
 
     self.assets = {
+        buttons = {},
         tile = {},
         hazard = {},
         trigger = {},

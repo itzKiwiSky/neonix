@@ -33,6 +33,10 @@ function ViewManager.load(path)
 end
 
 function ViewManager.reloadViews()
+    if love.filesystem.isFused() then
+        return
+    end
+
     for _, view in ipairs(ViewManager.views) do
         local fileinfo = love.filesystem.getInfo(view.path)
         if fileinfo.modtime > view.lastmod then

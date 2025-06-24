@@ -23,7 +23,7 @@ function LoadingState:update(elapsed)
     if not AUDIO_LOADED then
         loveloader.update()
     else
-        gamestate.switch(EditorState)
+        gamestate.switch(LevelEditorListState)
     end
 end
 

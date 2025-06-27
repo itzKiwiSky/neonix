@@ -5,7 +5,9 @@
             "menu_selection_title" : "Select mode",
             "menu_selection_normal_title" : "Normal mode",
             "menu_selection_editor_title" : "Editor mode",
-            "menu_selection_char_editor_title" : "Customization mode"
+            "menu_selection_char_editor_title" : "Customization mode",
+            "menu_selection_achievments" : "Achievments",
+            "menu_selection_settings" : "Settings"
         },
         "editor_hub" : {
             "menu_selection_editor_hub_create" : "Create",

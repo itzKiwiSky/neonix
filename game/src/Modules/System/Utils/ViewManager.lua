@@ -104,6 +104,12 @@ function ViewManager.textinput(t)
     end
 end
 
+function ViewManager.wheelmoved(x, y)
+    local sucess, err = pcall(loveframes.wheelmoved, x, y)
+    if err then
+        print(err)
+    end
+end
 
 
 return ViewManager

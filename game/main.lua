@@ -93,7 +93,9 @@ function love.initialize()
     -- autoload states --
     local states = love.filesystem.getDirectoryItems("src/Scenes")
     for s = 1, #states, 1 do
-        require("src.Scenes." .. states[s]:gsub(".lua", ""))
+        if love.filesystem.getInfo("src/Scenes/" .. states[s]).type == "file" then
+            require("src.Scenes." .. states[s]:gsub(".lua", ""))
+        end
     end
 
     -- some shit --

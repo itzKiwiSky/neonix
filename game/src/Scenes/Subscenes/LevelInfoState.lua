@@ -1,9 +1,9 @@
-LevelEditorListState = {}
+LevelInfoState = {}
 
-function LevelEditorListState:enter()
+function LevelInfoState:enter()
     self.viewManager = require 'src.Modules.System.Utils.ViewManager'
 
-    self.viewManager.load("src/Modules/Game/Views/Static/LevelList.lua")
+    self.viewManager.load("src/Modules/Game/Views/Static/LevelInfo.lua")
 
     --self.song = SoundManager.newChannel("mainMenu")
     --self.song:loadSource("future_base")
@@ -14,38 +14,38 @@ function LevelEditorListState:enter()
     --end
 end
 
-function LevelEditorListState:draw()
+function LevelInfoState:draw()
     self.viewManager.draw()
 end
 
-function LevelEditorListState:update(elapsed)
+function LevelInfoState:update(elapsed)
     self.viewManager.update(elapsed)
     self.viewManager.reloadViews()
 end
 
-function LevelEditorListState:mousepressed(x, y, button)
+function LevelInfoState:mousepressed(x, y, button)
     self.viewManager.mousepressed(x, y, button)
 end
 
-function LevelEditorListState:mousereleased(x, y, button)
+function LevelInfoState:mousereleased(x, y, button)
     self.viewManager.mousereleased(x, y, button)
 end
 
-function LevelEditorListState:keypressed(k)
+function LevelInfoState:keypressed(k)
     self.viewManager.keypressed(k)
 end
 
-function LevelEditorListState:keyreleased(k)
+function LevelInfoState:keyreleased(k)
     self.viewManager.keyreleased(k)
 end
 
 
-function LevelEditorListState:textinput(t)
+function LevelInfoState:textinput(t)
     self.viewManager.textinput(t)
 end
 
-function LevelEditorListState:wheelmoved(x, y)
+function LevelInfoState:wheelmoved(x, y)
     self.viewManager.wheelmoved(x, y)
 end
 
-return LevelEditorListState
+return LevelInfoState

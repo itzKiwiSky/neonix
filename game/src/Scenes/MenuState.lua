@@ -1,5 +1,9 @@
 MenuState = {}
 
+function MenuState:init()
+    self.transitionDone = false
+end
+
 function MenuState:enter()
     local MenuBGParticles = require 'src.Modules.Game.Graphics.MenuParticleSystem'
     local Clickzone = require 'src.Modules.Game.Menu.Clickzone'
@@ -53,6 +57,8 @@ function MenuState:enter()
         customize = love.graphics.newImage("assets/images/menus/selectionPlayerEditor.png"),
         browseHub = love.graphics.newImage("assets/images/menus/editorHubBrowse.png"),
         savedLevels = love.graphics.newImage("assets/images/menus/editorHubSaved.png"),
+        settings = love.graphics.newImage("assets/images/menus/settingsHub.png"),
+        achievments = love.graphics.newImage("assets/images/menus/trophieAchievment.png"),
     }
 
     self.mouseData = {x = 0, y = 0}
@@ -66,7 +72,7 @@ function MenuState:enter()
             selected = false,
             sizeMulti = 0,
             textAlpha = 0,
-            changeState = EditorMenuState,
+            changeState = LevelEditorListState,
             lock = {
                 locked = false,
                 alpha = 0,
@@ -129,6 +135,34 @@ function MenuState:enter()
                 color = {1, 1, 1}
             }
         },
+        {
+            icon = self.menuIcons.achievments,
+            name = "achievments",
+            title = languageService["menu_selection_achievments"],
+            selected = false,
+            sizeMulti = 0,
+            textAlpha = 0,
+            changeState = EditorMenuState,
+            lock = {
+                locked = false,
+                alpha = 0,
+                color = {1, 1, 1}
+            }
+        },
+        {
+            icon = self.menuIcons.settings,
+            name = "settings",
+            title = languageService["menu_selection_settings"],
+            selected = false,
+            sizeMulti = 0,
+            textAlpha = 0,
+            changeState = EditorMenuState,
+            lock = {
+                locked = false,
+                alpha = 0,
+                color = {1, 1, 1}
+            }
+        },
     }
 
     self.sunRotation = 0
@@ -141,21 +175,16 @@ function MenuState:enter()
     self.enterCamAnimTransitionRunning = true
     self.leaveCamAnimTransitionRunning = false
 
-    self.enterCamTweenGroup = flux.group()
-    self.enterCamTween = self.enterCamTweenGroup:to(self.menuCam, 3, {y = shove.getViewportHeight() / 2})
-    self.enterCamTween:ease("backout")
-    self.enterCamTween:oncomplete(function()
-        self.enterCamAnimTransitionRunning = false
-    end)
-
-
-    self.leaveCamTweenGroup = flux.group()
-    self.leaveCamTween = self.leaveCamTweenGroup:to(self.menuCam, 1.6, {x = -(shove.getViewportWidth() + 512)})
-    self.leaveCamTween:ease("backin")
-    self.leaveCamTween:oncomplete(function()
-        self.leaveCamAnimTransitionRunning = false
-        gamestate.switch(self.menuContent[self.optionSelected].changeState)
-    end)
+    if not self.transitionDone then
+        self.enterCamTweenGroup = flux.group()
+        self.enterCamTween = self.enterCamTweenGroup:to(self.menuCam, 3, {y = shove.getViewportHeight() / 2})
+        self.enterCamTween:ease("backout")
+        self.enterCamTween:oncomplete(function()
+            self.enterCamAnimTransitionRunning = false
+        end)
+    else
+        self.menuCam.y = shove.getViewportHeight() / 2
+    end
 end
 
 function MenuState:draw()
@@ -200,6 +229,8 @@ function MenuState:draw()
 
         --love.graphics.rectangle("fill", optionBoxX, shove.getViewportHeight() / 2 - 256 / 2, 256, 256, 15)
     self.menuCam:detach()
+    
+    love.graphics.print(self.scrollTarget, 32, 32)
 
     love.graphics.setColor(1, 1, 1, 1)
 end
@@ -212,10 +243,6 @@ function MenuState:update(elapsed)
     if self.enterCamAnimTransitionRunning then
         self.enterCamTweenGroup:update(elapsed)
     end
-
-    if self.leaveCamAnimTransitionRunning then
-        self.leaveCamTweenGroup:update(elapsed)
-    end
 end
 
 function MenuState:mousepressed(x, y, button)
@@ -227,6 +254,8 @@ function MenuState:keypressed(k)
         self.scrollTarget = math.min(#self.menuContent - 1, self.scrollTarget + 1)
     elseif k == "left" then
         self.scrollTarget = math.max(0, self.scrollTarget - 1)
+    elseif k == "return" then
+        gamestate.push(self.menuContent[self.scrollTarget + 1].changeState)
     end
 end
 

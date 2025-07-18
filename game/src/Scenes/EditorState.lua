@@ -72,10 +72,6 @@ local function _onScreen(obj, cam)
 end
 
 function EditorState:enter()
-    love.graphics.push("all")
-    slab.Initialize({"NoDocks"})
-    love.graphics.pop()
-
     loveframes.SetActiveSkin("Dark blue")
     self.Editor = {
         components = {

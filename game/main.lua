@@ -1,4 +1,5 @@
 require('src.Modules.System.Run')
+local gitstuff = require 'src.Modules.System.GitStuff'  -- super important stuff --
 
 local function preloadAudio(target)
     --local files = fsutil.scanFolder("assets/sounds/Tracks", false)
@@ -46,7 +47,6 @@ function love.initialize()
                         usertoken = ""
                     },
                     discordRichPresence = true,
-                    gamepadSupport = false,
                 }
             }
         }
@@ -79,6 +79,7 @@ function love.initialize()
         }
     }
 
+
     loveloader.start(function()
         AUDIO_LOADED = true
     end, function(k, h, n)
@@ -86,6 +87,8 @@ function love.initialize()
             io.printf(string.format("{bgBrightMagenta}{brightCyan}{bold}[LOVE]{reset}{brightWhite} : Audio file loaded with {brightGreen}sucess{reset} | {bold}{underline}{brightYellow}%s{reset}\n", n))
         end
     end)
+
+    gitstuff()      -- still super important --
 
 
     local languageManager = require 'src.Modules.System.Utils.LanguageManager'
@@ -121,4 +124,8 @@ function love.keypressed(k)
     if k == "f11" then
         gamestate.switch(EditorState)
     end
+end
+
+function love.quit()
+    discordRPC.shutdown()
 end

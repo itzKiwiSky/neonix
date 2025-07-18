@@ -9,6 +9,7 @@
 
 </div>
 
+## Features
 
 > Control Your character jumping above spikes and holes, with 13 Soundtracks, in this rhythm based platform.
 
@@ -19,6 +20,12 @@
 > Custom levels support editing on the info file, and you can add custom color, and commands to make map more dynamic, and have support for custom song (format .ogg).
 
 Powered by [LÖVE](https://love2d.org/)
+
+## Building
+> The game is powered with [LÖVE](https://love2d.org/) just download the source code, zip it, name it with .love extension and you're good to go.
+> Optionally, you can download and use [Lover](https://github.com/Wolfyxon/lover/tree/main) tool to compile to direct executable.
+Open the project directory where the `lover.toml` file is, next open the terminal and run `lover build`
+> NOTE: Make sure the lover is in the system path
 
 # Contributing
 The game is in alpha stage, and is not accept contributions, check our Gamejolt and Itch.io page to get notified when the contributions will be accepted
@@ -52,7 +59,8 @@ To tun the game on your machine, first, install LÖVE and download the project, 
 - [LoveKeys - SpaceCat-Chan](github.com/SpaceCat-Chan/LoveKeys/blob/master/LoveKeys.lua)
 - [LoveLoader - Kikito](https://github.com/kikito/love-loader)
 - [NPad93.Nanite - MikuAuahDark](https://github.com/MikuAuahDark/NPad93/blob/master/nanite.lua)
-
+- [LOVEDownloader - SNisin](https://github.com/kikito/love-loader)
+- [LoveZip - Rami-Sabbagh](https://github.com/Rami-Sabbagh/LoveZip)
 
 And all the love2D community, you guys are awesome <3
 

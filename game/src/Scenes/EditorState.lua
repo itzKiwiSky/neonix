@@ -165,7 +165,7 @@ function EditorState:enter()
 
     
     self.Editor.components.loveView.registerLoveframesEvents()
-    self.Editor.components.loveView.loadView("src/Modules/Game/Views/Static/EditorToolkit.lua")
+    self.Editor.components.loveView.loadView("src/Modules/Game/Views/EditorToolkit.lua")
 end
 
 function EditorState:draw()

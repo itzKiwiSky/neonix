@@ -4,7 +4,7 @@ function LevelEditorListState:enter()
     self.loveView = require 'src.Modules.System.Utils.LoveView'
 
     self.loveView.registerLoveframesEvents()
-    self.loveView.loadView("src/Modules/Game/Views/Static/LevelList.lua")
+    self.loveView.loadView("src/Modules/Game/Views/LevelList.lua")
 
     --self.song = SoundManager.newChannel("mainMenu")
     --self.song:loadSource("future_base")

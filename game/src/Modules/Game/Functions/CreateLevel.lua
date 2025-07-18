@@ -16,9 +16,9 @@ return function(levelname)
             levelid = 0,
         },
         level = {
-            startPos = {640 - 16, 384 - 16},
-            endPos = {1584, 384 - 16},
-            bgID = 1,
+            startPos = {shove.getViewportWidth() / 2 - 16, shove.getViewportHeight() / 2 - 16},
+            endPos = {1584, shove.getViewportHeight() / 2 - 16},
+            bgID = 2,
             colorChannels = {
                 ["bg"] = {60 / 255, 205 / 255, 168 / 255},
                 ["obj"] = {255 / 255, 255 / 255, 255 / 255},

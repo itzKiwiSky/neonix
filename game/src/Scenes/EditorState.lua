@@ -157,9 +157,6 @@ function EditorState:enter()
         table.insert(self.assets.bgs, love.graphics.newImage("assets/images/backgrounds/" .. bgs[b]))
     end
 
-    self.Editor.components.viewManager.load("src/Modules/Game/Views/Static/EditorToolkit.lua")
-
-    
     self.Editor.components.loveView.registerLoveframesEvents()
     self.Editor.components.loveView.loadView("src/Modules/Game/Views/EditorToolkit.lua")
 end
@@ -185,7 +182,7 @@ function EditorState:draw()
         end
     end
     _drawStaticGrid(self.editorCamera, 32)
-    self.editorCamera:attach()
+    self.editorCamera:attach(0, 0, shove.getViewportWidth(), shove.getViewportHeight(), true)
         for _, o in pairs(self.editorLevelData.objects) do
             if o.meta.selected then
                 love.graphics.setColor(0, 1, 0, 1)
@@ -320,12 +317,12 @@ end
 function EditorState:update(elapsed)
     self.Editor.components.loveView.update(elapsed)
 
-    local inside, mx, my = shove.mouseToViewport()
-    local mx, my = self.editorCamera:worldCoords(mx, my)
+    local inside, vx, vy = shove.mouseToViewport()
+    local mx, my = self.editorCamera:worldCoords(vx, vy, 0, 0, shove.getViewportWidth(), shove.getViewportHeight())
     self.Editor.data.mouse.x = math.floor(mx / 32) * 32
     self.Editor.data.mouse.y = math.floor(my / 32) * 32
 
-    self.editorCamera.scale = math.lerp(self.editorCamera.scale, self.editorCamera.targetZoom, 0.075)
+    self.editorCamera.scale = love.ease.linear(0.075, self.editorCamera.scale, self.editorCamera.targetZoom - self.editorCamera.scale, 1)
     if self.editorCamera.scale > 3 then
         self.editorCamera.targetZoom = 3
     end
@@ -343,19 +340,13 @@ end
 
 
 function EditorState:mousepressed(x, y, button)
-    self.Editor.components.viewManager.mousepressed(x, y, button)
     if not self.Editor.flags.swipeMode then
         _action(self)
     end
 end
 
-function EditorState:mousereleased(x, y, button)
-    self.Editor.components.viewManager.mousereleased(x, y, button)
-end
-
 function EditorState:keypressed(k)
     local modes = {"build", "edit", "delete"}
-    self.Editor.components.viewManager.keypressed(k)
     if k == "q" then
         self.Editor.data.angle = self.Editor.data.angle - 90
     elseif k == "e" then
@@ -380,20 +371,12 @@ function EditorState:keypressed(k)
     end]]--
 end
 
-function EditorState:keyreleased(k)
-    self.Editor.components.viewManager.keyreleased(k)
-end
-
 function EditorState:mousemoved(x, y, dx, dy)
     -- mouse scroll --
     if love.mouse.isDown(2, 3) then
         self.editorCamera.x = self.editorCamera.x - dx / self.editorCamera.scale
         self.editorCamera.y = self.editorCamera.y - dy / self.editorCamera.scale
     end
-end
-
-function EditorState:textinput(t)
-    self.Editor.components.viewManager.textinput(t)
 end
 
 function EditorState:wheelmoved(x, y)

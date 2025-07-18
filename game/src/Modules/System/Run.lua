@@ -5,6 +5,7 @@ gamestate = require 'src.Modules.System.Utils.GameState'
 json = require 'src.Modules.System.Utils.JSON'
 class = require 'src.Modules.System.Utils.Classic'
 gamejolt = require 'src.Modules.System.Utils.Gamejolt'
+baton = require 'src.Modules.System.Utils.Baton'
 
 love._FPSCap = 1000
 love._unfocusedFPSCap = 60
@@ -78,9 +79,23 @@ function love.run()
     package.cpath = newCPath
     copyLib()
 
-    discordRPC = require 'src.Modules.System.Utils.DiscordRPC'  
+    discordRPC = require 'src.Modules.System.Utils.DiscordRPC'
 
     fontcache.init()
+
+    Controller = baton.new({
+        controls = {
+            ["jump"] = { "key:space", "key:z", "key:w", "key:up", "button:a" },
+            ["invert"] = { "key:return", "key:lshift", "key:rshift", "button:dpdown" },
+            ["ui_left"] = { "key:left", "key:a", "axis:leftx-" },
+            ["ui_right"] = { "key:left", "key:a", "axis:leftx+" },
+            ["ui_up"] = { "key:left", "key:a", "axis:lefty+" },
+            ["ui_down"] = { "key:left", "key:a", "axis:lefty-" },
+            ["ui_accept"] = { "key:return", "button:a" },
+            ["ui_back"] = { "key:escape", "key:backspace", "button:b" }
+        },
+        joystick = love.joystick.getJoysticks()[1],
+    })
 
 
     local addons = fsutil.scanFolder("src/Modules/System/Addons")
@@ -108,7 +123,7 @@ function love.run()
     -- Initialize Shöve with fixed game resolution and options
     shove.setResolution(1280, 768, { fitMethod = "aspect" })
     -- Set up a resizable window
-    shove.setWindowMode(1280, 768, {resizable = true, vsync = false})
+    shove.setWindowMode(1440, 900, {resizable = true, vsync = false})
 
     local fpsfont = love.graphics.newFont(16)
 
@@ -150,6 +165,7 @@ function love.run()
 
         if love.update then 
             love.update(elapsed)
+            Controller:update()
         end
 
         if love.graphics and love.graphics.isActive() then

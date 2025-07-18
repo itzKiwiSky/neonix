@@ -155,6 +155,7 @@ function TitleState:update(elapsed)
     end
 
     self.fogGlowFx:update(elapsed)
+
 end
 
 function TitleState:keypressed(k)

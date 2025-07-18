@@ -42,6 +42,7 @@ To tun the game on your machine, first, install LÖVE and download the project, 
 [Some vector icons - SVG REPO](https://www.svgrepo.com/)
 
 ### Libraries used
+- [Baton - tesselode](https://github.com/tesselode/baton)
 - [LoveFrames - LinuxMan](https://github.com/linux-man/LoveFrames)
 - [Flux - rxi](https://github.com/rxi/flux/)
 - [GamejoltLua - mbrovko](https://github.com/mbrovko/gamejoltlua)
@@ -56,7 +57,7 @@ To tun the game on your machine, first, install LÖVE and download the project, 
 - [Knife.event - airstruck](https://github.com/airstruck/knife)
 - [collision - V3X3D](https://gitlab.com/V3X3D/love-libs)
 - [NativeFS - EngineerSmith](https://github.com/EngineerSmith/nativefs)
-- [LoveKeys - SpaceCat-Chan](github.com/SpaceCat-Chan/LoveKeys/blob/master/LoveKeys.lua)
+- [LoveKeys - SpaceCat-Chan](https://github.com/SpaceCat-Chan/LoveKeys/blob/master/)
 - [LoveLoader - Kikito](https://github.com/kikito/love-loader)
 - [NPad93.Nanite - MikuAuahDark](https://github.com/MikuAuahDark/NPad93/blob/master/nanite.lua)
 - [LOVEDownloader - SNisin](https://github.com/kikito/love-loader)

@@ -76,3 +76,4 @@ DerivedDataCache/*
 #Api shit
 game/src/ApiConfig.json
 *.txt
+.nxid

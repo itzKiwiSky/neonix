@@ -49,13 +49,14 @@
             "menu_action_screen_backup_load_process_fail" : "Failed to download backup, please try again later"
         },
         "level_list" : {
-            "menu_level_list_title" : "Editor list",
+            "menu_level_list_title" : "Level selection",
             "menu_level_list_create" : "Create",
             "menu_level_list_warn_list_empty" : "No level are created yet",
             "level_list_item_buttons" : {
                 "level_list_item_buttons_edit" : "Edit",
                 "level_list_item_buttons_delete" : "Delete",
-                "level_list_item_buttons_upload" : "Upload"
+                "level_list_item_buttons_refresh" : "Refresh",
+                "level_list_item_buttons_back" : "Back"
             },
             "menu_level_list_window" : {
                 "menu_level_list_window_title" : "Create new level",

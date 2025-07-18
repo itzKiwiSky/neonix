@@ -2,7 +2,7 @@ EditorState = {}
 
 local function _drawStaticGrid(camera, cellSize)
     -- Obter dimensões da tela
-    local screenWidth, screenHeight = love.graphics.getDimensions()
+    local screenWidth, screenHeight = shove.getViewportDimensions()
 
     -- Ajustar o tamanho das células da grade com base no zoom
     local adjustedCellSize = cellSize * camera.scale
@@ -77,9 +77,9 @@ function EditorState:enter()
     love.graphics.pop()
 
     loveframes.SetActiveSkin("Dark blue")
-
     self.Editor = {
         components = {
+            loveView = require 'src.Modules.System.Utils.LoveView',
             createLevel = require 'src.Modules.Game.Functions.CreateLevel',
             viewManager = require 'src.Modules.System.Utils.ViewManager',
         },
@@ -94,6 +94,7 @@ function EditorState:enter()
             showHitbox = false,
         },
     }
+
 
     self.editorLevelData = self.Editor.components.createLevel()
     self.editorCamera = camera()
@@ -161,6 +162,10 @@ function EditorState:enter()
     end
 
     self.Editor.components.viewManager.load("src/Modules/Game/Views/Static/EditorToolkit.lua")
+
+    
+    self.Editor.components.loveView.registerLoveframesEvents()
+    self.Editor.components.loveView.loadView("src/Modules/Game/Views/Static/EditorToolkit.lua")
 end
 
 function EditorState:draw()
@@ -272,7 +277,7 @@ function EditorState:draw()
     swipeMode: %s
     ]]):format(self.Editor.data.currentEditorMode, self.Editor.flags.swipeMode), 10, 32)
 
-    self.Editor.components.viewManager.draw()
+    self.Editor.components.loveView.draw()
 end
 
 local function _action(self)
@@ -317,8 +322,7 @@ local function _action(self)
 end
 
 function EditorState:update(elapsed)
-    self.Editor.components.viewManager.update()
-    self.Editor.components.viewManager.reloadViews()
+    self.Editor.components.loveView.update(elapsed)
 
     local inside, mx, my = shove.mouseToViewport()
     local mx, my = self.editorCamera:worldCoords(mx, my)

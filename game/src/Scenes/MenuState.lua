@@ -188,7 +188,7 @@ function MenuState:enter()
 end
 
 function MenuState:draw()
-    self.menuCam:attach()
+    self.menuCam:attach(0, 0, shove.getViewportWidth(), shove.getViewportHeight(), true)
         love.graphics.setBlendMode("add")
         love.graphics.draw(self.MenuBGP, shove.getViewportWidth() / 2, shove.getViewportHeight() / 2)
         love.graphics.draw(self.sunGlow, shove.getViewportWidth() / 2, shove.getViewportHeight() / 2, 0, self.sunBG:getWidth() / self.sunGlow:getWidth(), self.sunBG:getHeight() / self.sunGlow:getHeight(), self.sunGlow:getWidth() / 2, self.sunGlow:getHeight() / 2)
@@ -236,6 +236,8 @@ function MenuState:draw()
 end
 
 function MenuState:update(elapsed)
+    self.menuCam.x = shove.getViewportWidth() / 2
+
     self.MenuBGP:update(elapsed)
 
     self.scroll = self.scroll + (self.scrollTarget - self.scroll) * elapsed * self.scrollSpeed

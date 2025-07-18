@@ -8,6 +8,9 @@ class = require 'src.Modules.System.Utils.Classic'
 love._FPSCap = 1000
 love._unfocusedFPSCap = 60
 
+local oldGraphics = love.graphics
+love.graphics = require 'src.Modules.System.Utils.autobatch'
+
 local modes = love.window.getFullscreenModes()
 table.sort(modes, function(a, b) return a.width * a.height > b.width * b.height end) -- Ordena da maior para a menor
 love.window.resolutionModes = {}
@@ -102,7 +105,7 @@ function love.run()
     -- Initialize Shöve with fixed game resolution and options
     shove.setResolution(1280, 768, { fitMethod = "aspect" })
     -- Set up a resizable window
-    shove.setWindowMode(love.graphics.getWidth(), love.graphics.getHeight(), {resizable = true, vsync = false})
+    shove.setWindowMode(1280, 768, {resizable = true, vsync = false})
 
     local fpsfont = love.graphics.newFont(16)
 
@@ -123,6 +126,12 @@ function love.run()
                 if name == "quit" then
                     if not love.quit or not love.quit() then
                         return a or 0
+                    end
+                elseif name == "keypressed" then
+                    if not love.filesystem.isFused() then
+                        if a == "f12" then
+                            FEATURE_FLAGS.videoStats = not FEATURE_FLAGS.videoStats
+                        end
                     end
                 end
                 love.handlers[name](a,b,c,d,e,f)

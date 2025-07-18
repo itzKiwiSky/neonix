@@ -26,27 +26,28 @@ function love.initialize()
         clientID = stid(),
         user = {
             settings = {
-            video = {
-                resolution = 1,
-                fullscreen = false,
-                vsync = false,
-                fpsCap = 200,
-                antialiasing = true,
-            },
-            audio = {
-                masterVolume = 75,
-                musicVolume = 50,
-                sfxVolume = 50,
-            },
-            misc = {
-                language = "English",
-                gamejolt = {
-                    username = "",
-                    usertoken = ""
+                video = {
+                    resolution = 1,
+                    fullscreen = false,
+                    windowed = true,
+                    vsync = false,
+                    fpsCap = 200,
+                    antialiasing = true,
                 },
-                discordRichPresence = true,
-                gamepadSupport = false,
-            }
+                audio = {
+                    masterVolume = 75,
+                    musicVolume = 50,
+                    sfxVolume = 50,
+                },
+                misc = {
+                    language = "English",
+                    gamejolt = {
+                        username = "",
+                        usertoken = ""
+                    },
+                    discordRichPresence = true,
+                    gamepadSupport = false,
+                }
             }
         }
     }
@@ -100,7 +101,7 @@ function love.initialize()
 
     -- some shit --
     oldGetPosition = love.mouse.getPosition
-    oldGetWidth, oldGetHeight, oldGetDimensions = love.graphics.getWidth, love.graphics.getHeight, love.graphics.getDimensions
+    --oldGetWidth, oldGetHeight, oldGetDimensions = love.graphics.getWidth, love.graphics.getHeight, love.graphics.getDimensions
     function love.mouse.getPosition()
         local inside, mx, my = shove.mouseToViewport()
         return mx, my
@@ -114,4 +115,10 @@ function love.initialize()
 
     gamestate.registerEvents()
     gamestate.switch(LoadingState)
+end
+
+function love.keypressed(k)
+    if k == "f11" then
+        gamestate.switch(EditorState)
+    end
 end

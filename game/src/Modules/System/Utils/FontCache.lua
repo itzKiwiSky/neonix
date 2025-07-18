@@ -1,12 +1,10 @@
+---@class FontCache
 local FontCache = {
     paths = {},
-    imgpaths = {},
     pool = {},
-    bmppool = {},
 }
 
-local template = [[!"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~]]
-
+---Initializes the font cache function, loading all the font paths by name
 function FontCache.init()
     FontCache.paths = love.filesystem.getDirectoryItems("assets/fonts")
 
@@ -15,30 +13,19 @@ function FontCache.init()
     end
 end
 
-function FontCache.registerImageFont(name, path)
-    FontCache.imgpaths[name] = path
-end
-
-function FontCache.getImageFont(n, size)
-    if FontCache.paths[n] then
-        if FontCache.bmppool[name .. "-" .. size] then
-            return FontCache.bmppool[name .. "-" .. size]
-        else
-            FontCache.bmppool[name .. "-" .. size] = love.graphics.newImageFont()
-            return FontCache.bmppool[name .. "-" .. size]
-        end
-    end
-end
-
-function FontCache.getFont(_name, _size)
+---Check if the font exist in the path, if not, create a new object font with the size desire ad saves on the pool
+---@param name string
+---@param size number
+---@return love.Font
+function FontCache.getFont(name, size)
     for p = 1, #FontCache.paths, 1 do
         local path = FontCache.paths[p]:match("[^/]+$"):gsub(".ttf", "")
-        if path == _name then
-            local fontdata = _name .. "-" .. _size
+        if path == name then
+            local fontdata = name .. "-" .. size
             if FontCache.pool[fontdata] then
                 return FontCache.pool[fontdata]
             else
-                FontCache.pool[fontdata] = love.graphics.newFont(FontCache.paths[p], _size)
+                FontCache.pool[fontdata] = love.graphics.newFont(FontCache.paths[p], size)
                 return FontCache.pool[fontdata]
             end
         end

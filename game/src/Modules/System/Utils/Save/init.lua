@@ -70,7 +70,8 @@ function Neuron:initialize()
             local slotData = love.filesystem.read("slots/" .. slotHashedName .. ".neu")
             local decryptedSlotData = crypt(slotData, slotHashedName)
             local sucess, data = pcall((load or loadstring)("return" .. decryptedSlotData))
-            self.save = data
+
+            self.save = utils.merge(data)
         end
 
         if self.isDebugMode then

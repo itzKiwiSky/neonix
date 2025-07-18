@@ -15,7 +15,6 @@ function OutdatedState:enter()
         Proceed anyway [ESCAPE]
 
 
-
         Thanks for playing Neonix!
     ]]
         
@@ -31,11 +30,11 @@ end
 
 function OutdatedState:draw()
     self.textEffect(function()
-        --love.graphics.printf("Neonix!", self.f_logo, 0, 120, love.graphics.getWidth(), "center")
-        love.graphics.draw(self.f_logo, love.graphics.getWidth() / 2 - self.f_logo:getWidth() / 2, 128, 0, 0.5, 0.5)
-        love.graphics.printf(self.placeholderWarnText, self.f_warn, 0, 400, love.graphics.getWidth(), "center")
+        --love.graphics.printf("Neonix!", self.f_logo, 0, 120, shove.getViewportWidth(), "center")
+        love.graphics.draw(self.f_logo, shove.getViewportWidth() / 2 - self.f_logo:getWidth() / 2, 128, 0, 0.5, 0.5)
+        love.graphics.printf(self.placeholderWarnText, self.f_warn, 0, 400, shove.getViewportWidth(), "center")
 
-        love.graphics.draw(self.nxlogo, 30, (love.graphics.getHeight() - 156), 0, 128 / self.nxlogo:getWidth(), 128 / self.nxlogo:getHeight())
+        love.graphics.draw(self.nxlogo, 30, (shove.getViewportHeight() - 156), 0, 128 / self.nxlogo:getWidth(), 128 / self.nxlogo:getHeight())
     end)
 end
 

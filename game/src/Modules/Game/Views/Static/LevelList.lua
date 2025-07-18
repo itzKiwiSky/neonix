@@ -220,7 +220,12 @@ return function()
     levelList:SetSize(640, 480)
     levelList:SetPadding(8)
     levelList:SetSpacing(8)
-    levelList:Center()
+    levelList:SetX(shove.getViewportWidth() / 2 - levelList:GetWidth() / 2)
+    levelList:SetY(shove.getViewportHeight() / 2 - levelList:GetHeight() / 2)
+    levelList.update = function(object, elapsed)
+        levelList:SetX(shove.getViewportWidth() / 2 - levelList:GetWidth() / 2)
+        levelList:SetY(shove.getViewportHeight() / 2 - levelList:GetHeight() / 2)
+    end
     levelList.drawfunc = function(object)
         local skin = object:GetSkin()
         local x = object:GetX()
@@ -258,6 +263,19 @@ return function()
         local levelsListDir = love.filesystem.getDirectoryItems("user/editor")
 
         levelList:Clear()
+        if #levelsListDir == 0 then
+            local listMessage = loveframes.Create("text")
+            listMessage:SetFont(settings.fonts["levelNameFont"])
+            listMessage:SetText({ color = {1, 1, 1, 255}, languageService["menu_level_list_title"] })
+            listMessage:CenterX()
+            listMessage.update = function(object, elapsed)
+                listMessage:SetX(shove.getViewportWidth() / 2 - listMessage:GetWidth() / 2)
+            end
+            listMessage:SetY(64)
+
+            return
+        end
+    
         for _, v in ipairs(levelsListDir) do
             if love.filesystem.getInfo("user/editor/" .. v).type == "file" then
                 createLevelButton(v:gsub("%.[^.]+$", ""))
@@ -269,12 +287,15 @@ return function()
 
     local title = loveframes.Create("text")
     title:SetFont(settings.fonts["levelNameFont"])
-    title:SetText({ color = {1, 1, 1, 255}, "Level selection" })
+    title:SetText({ color = {1, 1, 1, 255}, languageService["menu_level_list_title"] })
     title:CenterX()
+    title.update = function(object, elapsed)
+        title:SetX(shove.getViewportWidth() / 2 - title:GetWidth() / 2)
+    end
     title:SetY(64)
 
     local buttonRefresh = loveframes.Create("button")
-    buttonRefresh:SetText("Refresh")
+    buttonRefresh:SetText(languageService["level_list_item_buttons_refresh"])
     buttonRefresh:SetPos(16, shove.getViewportHeight() - 85)
     buttonRefresh:SetFont(settings.fonts["buttonsFont"])
     buttonRefresh:SetSize(128, 72)
@@ -282,7 +303,7 @@ return function()
     buttonRefresh.OnClick = refreshLevelList
 
     local createButton = loveframes.Create("button")
-    createButton:SetText("Create")
+    createButton:SetText(languageService["menu_level_list_create"])
     createButton:SetPos(shove.getViewportWidth() - 144, shove.getViewportHeight() - 85)
     createButton:SetFont(settings.fonts["buttonsFont"])
     createButton:SetSize(128, 72)
@@ -292,7 +313,7 @@ return function()
     end
 
     local backButton = loveframes.Create("button")
-    backButton:SetText("Back")
+    backButton:SetText(languageService["level_list_item_buttons_back"])
     backButton:SetPos(16, 16)
     backButton:SetFont(settings.fonts["buttonsFont"])
     backButton:SetSize(96, 72)

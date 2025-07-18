@@ -23,7 +23,7 @@ function LoadingState:update(elapsed)
     if not AUDIO_LOADED then
         loveloader.update()
     else
-        gamestate.switch(TitleState)
+        gamestate.switch(SplashState)
     end
 end
 

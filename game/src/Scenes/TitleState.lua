@@ -55,7 +55,7 @@ function TitleState:enter()
     self.fogGlowFx = self.Fog(love.graphics.newImage("assets/images/menus/glow.png"))
 
     self.menuCam = camera()
-    self.menuCam.y = self.menuCam.y - 96
+    self.menuCam.y = self.menuCam.y - 256
 
     event.hook(self.Conductor, { "beatHit" })
 
@@ -66,7 +66,7 @@ function TitleState:enter()
     self.enterPressed = false
     self.flash = 0
 
-    self.camTween = flux.to(self.menuCam, 3, {y = self.menuCam.y + love.graphics.getHeight()})
+    self.camTween = flux.to(self.menuCam, 3, {y = self.menuCam.y + shove.getViewportHeight()})
     self.camTween:delay(1.8)
     self.camTween:ease("backin")
     self.camTween:oncomplete(function()
@@ -83,11 +83,11 @@ function TitleState:enter()
 end
 
 function TitleState:draw()
-    self.menuCam:attach()
-        love.graphics.draw(self.gradientBG, 0, -256, 0, 1280, 768 + 512)
-        love.graphics.draw(self.sun, love.graphics.getWidth() / 2, 256, 0, 1, 1, self.sun:getWidth() / 2, self.sun:getHeight() / 2)
+    self.menuCam:attach(0, 0, shove.getViewportWidth(), shove.getViewportHeight(), true)
+        love.graphics.draw(self.gradientBG, 0, -shove.getViewportWidth() / 2, 0, shove.getViewportWidth(), shove.getViewportHeight() + 512)
+        love.graphics.draw(self.sun, shove.getViewportWidth() / 2, 256, 0, 1, 1, self.sun:getWidth() / 2, self.sun:getHeight() / 2)
 
-        love.graphics.draw(self.fogGlowFx, 0, love.graphics.getHeight() / 2)
+        love.graphics.draw(self.fogGlowFx, 0, shove.getViewportHeight() / 2)
 
         love.graphics.setColor(1, 1, 1, 0.5)
         love.graphics.setBlendMode("add")
@@ -95,9 +95,9 @@ function TitleState:draw()
         love.graphics.setBlendMode("alpha")
         love.graphics.setColor(1, 1, 1, 1)
 
-        self.spvzmenu:draw(0, love.graphics.getHeight() / 2, 64, 0.3)
-        love.graphics.draw(self.hills, love.graphics.getWidth() / 2, 64, 0, 0.6, 0.7, self.hills:getWidth() / 2)
-        love.graphics.draw(self.hills, -love.graphics.getWidth() / 2 + 96, 64, 0, 0.6, 0.7, self.hills:getWidth() / 2)
+        self.spvzmenu:draw(0, shove.getViewportHeight() / 2, 64, 0.3)
+        love.graphics.draw(self.hills, shove.getViewportWidth() / 2, 64, 0, 0.6, 0.7, self.hills:getWidth() / 2)
+        love.graphics.draw(self.hills, -shove.getViewportWidth() / 2 + 96, 64, 0, 0.6, 0.7, self.hills:getWidth() / 2)
         love.graphics.draw(self.gridGradientBG, 0, 376, 0, 1280, 460)
         love.graphics.setColor(1, 1, 1, 0.5)
         love.graphics.setBlendMode("add")
@@ -106,23 +106,25 @@ function TitleState:draw()
         love.graphics.setColor(1, 1, 1, 1)
         love.graphics.draw(self.grid, 0, 376, 0, 1280 / self.grid:getWidth(), 0.9)
 
-        love.graphics.draw(self.nxLogo, love.graphics.getWidth() / 2, 128, 0, self.logoBumpSize, self.logoBumpSize, self.nxLogo:getWidth() / 2 , self.nxLogo:getHeight() / 2)
-        self.Expander.draw(love.graphics.getWidth() / 2, 128, 0)
+        love.graphics.draw(self.nxLogo, shove.getViewportWidth() / 2, 128, 0, self.logoBumpSize, self.logoBumpSize, self.nxLogo:getWidth() / 2 , self.nxLogo:getHeight() / 2)
+        self.Expander.draw(shove.getViewportWidth() / 2, 128, 0)
 
         love.graphics.setColor(0, 0, 0, 1)
-        love.graphics.rectangle("fill", 0, love.graphics.getHeight() - 128, love.graphics.getWidth(), 512)
-        love.graphics.draw(self.gridGradient, 0, love.graphics.getHeight() - 128, 0, 1280, -128)
+        love.graphics.rectangle("fill", 0, shove.getViewportHeight() - 128, shove.getViewportWidth(), 512)
+        love.graphics.draw(self.gridGradient, 0, shove.getViewportHeight() - 128, 0, 1280, -128)
         love.graphics.setColor(1, 1, 1, 1)
     self.menuCam:detach()
     love.graphics.setColor(1, 1, 1, self.alphaText)
-    love.graphics.draw(self.titleText, love.graphics.getWidth() / 2, 600, 0, 0.45, 0.45, self.titleText:getWidth() / 2, self.titleText:getHeight() / 2)
+    love.graphics.draw(self.titleText, shove.getViewportWidth() / 2, 600, 0, 0.45, 0.45, self.titleText:getWidth() / 2, self.titleText:getHeight() / 2)
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.setColor(1, 1, 1, self.flash)
-    love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
+    love.graphics.rectangle("fill", 0, 0, shove.getViewportWidth(), shove.getViewportHeight())
     love.graphics.setColor(1, 1, 1, 1)
 end
 
 function TitleState:update(elapsed)
+    self.menuCam.x = shove.getViewportWidth() / 2
+
     self.time = self.time + elapsed
     self.Conductor.songPos = (self.song.source:tell() * 1000)
     self.Conductor:update(elapsed)

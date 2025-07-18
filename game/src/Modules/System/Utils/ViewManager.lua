@@ -1,3 +1,6 @@
+
+---@class ViewManager
+---@deprecated use LoveView instead
 local ViewManager = {}
 ViewManager.views = {}
 

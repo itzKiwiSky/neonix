@@ -3,8 +3,8 @@ return function(levelname)
         meta = {
             title = levelname or "Unnamed level",
             gameversion = 0,
-            requestedDifficulty = 0, -- int range 1 -> 5
-            songid = "builtin:none",   -- it now uses protocol parse to identify song source
+            requestedDifficulty = 0, -- int range 1 -> 10
+            songid = "builtin:dubnix",   -- it now uses protocol parse to identify song source
             bgConfig = {
                 bgFactor = {
                     x = 0.5,
@@ -29,7 +29,6 @@ return function(levelname)
             startSpeed = 0, -- range from 0 to 4
             gravityFlipped = false,
         },
-        objects = {
-        },
+        objects = {},
     }
 end

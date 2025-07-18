@@ -1,7 +1,9 @@
 [![sexylogo:)](logo.png)](https://gamejolt.com/games/projectneonix/904594)
 ---
-# Neonix!
----
+<div align="center">
+<h1 style="font-size: 40px">Neonix!</h1>
+</div>
+
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/itzKiwiSky/neonix?style=for-the-badge&labelColor=rgb(45%2C%2045%2C%2045)&color=rgb(85%2C%2085%2C%2085))
 ![GitHub forks](https://img.shields.io/github/forks/itzKiwiSky/neonix?style=for-the-badge&labelColor=rgb(45%2C%2045%2C%2045)&color=rgb(85%2C%2085%2C%2085))
 ![GitHub stars](https://img.shields.io/github/stars/itzKiwiSky/neonix?style=for-the-badge&labelColor=rgb(45%2C%2045%2C%2045)&color=rgb(85%2C%2085%2C%2085))
@@ -37,17 +39,19 @@ To tun the game on your machine, first, install LÖVE and download the project, 
 - [GamejoltLua - mbrovko](https://github.com/mbrovko/gamejoltlua)
 - Neuron - KiwiSky (Save library private for now)
 - [luafft - h4rm (Modified for this project)](https://github.com/h4rm/luafft)
-- [Slab - flamendless](https://github.com/flamendless/Slab)
 - [hump.camera - vrld](https://github.com/vrld/hump)
 - [hump.gamestate - vrld](https://github.com/vrld/hump)
 - [hump.timer - vrld](https://github.com/vrld/hump)
-- [Classic - rxi](https://github.com/rxi/classic)
+- [Classic (Modified version)- rxi](https://github.com/rxi/classic)
 - [Lume - rxi](https://github.com/rxi/lume)
 - [lua-discordRPC - pfirsich](https://github.com/pfirsich/lua-discordRPC)
 - [Knife.event - airstruck](https://github.com/airstruck/knife)
 - [collision - V3X3D](https://gitlab.com/V3X3D/love-libs)
-- [Multouch - Bl0odWolf (❤️)](https://github.com/Bl0odWolf/Multouch)
 - [NativeFS - EngineerSmith](https://github.com/EngineerSmith/nativefs)
+- [LoveKeys - SpaceCat-Chan](github.com/SpaceCat-Chan/LoveKeys/blob/master/LoveKeys.lua)
+- [LoveLoader - Kikito](https://github.com/kikito/love-loader)
+- [NPad93.Nanite - MikuAuahDark](https://github.com/MikuAuahDark/NPad93/blob/master/nanite.lua)
+
 
 And all the love2D community, you guys are awesome <3
 

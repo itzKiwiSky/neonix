@@ -12,17 +12,17 @@ function SplashState:enter()
     self.snd_logosnd = love.audio.newSource("assets/sounds/logoSplash.ogg", "static")
 
     self.kiwiLogoPos = {
-        x = love.graphics.getWidth() / 2,
-        y = love.graphics.getHeight() / 2,
+        x = shove.getViewportWidth() / 2,
+        y = shove.getViewportHeight() / 2,
     }
     self.textProps = {
         alpha = 0,
-        y = love.graphics.getHeight() / 2
+        y = shove.getViewportHeight() / 2
     }
 
     self.logoPowered = {
         alpha = 0,
-        y = love.graphics.getHeight(),
+        y = shove.getViewportHeight(),
     }
 
     self.fadeConfig = {
@@ -45,7 +45,7 @@ function SplashState:enter()
         sleep(1)
             self.snd_logosnd:play()
         sleep(1.2)
-            self.loveLogoTween:to(self.logoPowered, 0.7, { alpha = 1, y = love.graphics.getHeight() - 200 }):ease("backinout")
+            self.loveLogoTween:to(self.logoPowered, 0.7, { alpha = 1, y = shove.getViewportHeight() - 200 }):ease("backinout")
         sleep(1.5)
             self.fadeTween:to(self.fadeConfig, 0.8, { alpha = 1 }):ease("sineinout"):oncomplete(function()
                 gamestate.switch(TitleState)
@@ -58,16 +58,16 @@ function SplashState:draw()
     love.graphics.draw(self.kiwiLogo, self.kiwiLogoPos.x, self.kiwiLogoPos.y, 0, 0.2, 0.2, self.kiwiLogo:getWidth() / 2, self.kiwiLogo:getHeight() / 2)
 
     love.graphics.setColor(1, 1, 1, self.textProps.alpha)
-        love.graphics.printf("KiwiStation\nStudios", self.fnt_logoText, 0, self.textProps.y, love.graphics.getWidth(), "center")
+        love.graphics.printf("KiwiStation\nStudios", self.fnt_logoText, 0, self.textProps.y, shove.getViewportWidth(), "center")
     love.graphics.setColor(1, 1, 1, 1)
 
     love.graphics.setColor(1, 1, 1, self.logoPowered.alpha)
-        love.graphics.draw(self.whaleLogo, love.graphics.getWidth() / 2, self.logoPowered.y, 0, 0.4, 0.4, self.whaleLogo:getWidth() / 2, self.whaleLogo:getHeight() / 2)
-        love.graphics.printf("Powered with LÖVE", self.fnt_loveLogo, 0, self.logoPowered.y + 64, love.graphics.getWidth(), "center")
+        love.graphics.draw(self.whaleLogo, shove.getViewportWidth() / 2, self.logoPowered.y, 0, 0.4, 0.4, self.whaleLogo:getWidth() / 2, self.whaleLogo:getHeight() / 2)
+        love.graphics.printf("Powered with LÖVE", self.fnt_loveLogo, 0, self.logoPowered.y + 64, shove.getViewportWidth(), "center")
     love.graphics.setColor(1, 1, 1, 1)  
 
     love.graphics.setColor(0, 0, 0, self.fadeConfig.alpha)
-        love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
+        love.graphics.rectangle("fill", 0, 0, shove.getViewportWidth(), shove.getViewportHeight())
     love.graphics.setColor(1, 1, 1, 1)
 end
 

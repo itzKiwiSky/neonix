@@ -50,6 +50,19 @@ function utils.clear(t)
     return t
 end
 
+function utils.merge(...)
+    local rtn = {}
+    for i = 1, select("#", ...) do
+        local t = select(i, ...)
+        local iter = utils.getiter(t)
+        for k, v in iter(t) do
+            rtn[k] = v
+        end
+    end
+    return rtn
+end
+
+
 local serialize
 
 local serialize_map = {

@@ -4,7 +4,6 @@ shove = require 'src.Modules.System.Shove'
 gamestate = require 'src.Modules.System.Utils.GameState'
 json = require 'src.Modules.System.Utils.JSON'
 class = require 'src.Modules.System.Utils.Classic'
-discordRPC = require 'src.Modules.System.Utils.DiscordRPC'
 gamejolt = require 'src.Modules.System.Utils.Gamejolt'
 
 love._FPSCap = 1000
@@ -78,6 +77,8 @@ function love.run()
         --print(newCPath)
     package.cpath = newCPath
     copyLib()
+
+    discordRPC = require 'src.Modules.System.Utils.DiscordRPC'  
 
     fontcache.init()
 

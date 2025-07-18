@@ -1,7 +1,7 @@
 [![sexylogo:)](logo.png)](https://gamejolt.com/games/projectneonix/904594)
 ---
 <div align="center">
-<h1 style="font-size: 40px">Neonix!</h1>
+<h1 style="font-size: 100px">Neonix!</h1>
 </div>
 
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/itzKiwiSky/neonix?style=for-the-badge&labelColor=rgb(45%2C%2045%2C%2045)&color=rgb(85%2C%2085%2C%2085))

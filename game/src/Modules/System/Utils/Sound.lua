@@ -140,13 +140,16 @@ end
 
 --- Create a new channel object
 ---@param id string
----@param sourceObject love.audio.newSource:audioSource 
+---@param sourceObject love.Source 
 ---@return SoundChannel class
 function Sound.newChannel(id)
     assertType(id, "string")
     return Sound.channels[id] or SoundChannel.new(id)
 end
 
+---Get a channel by name
+---@param name string
+---@return SoundChannel
 function Sound.getChannel(name)
     assertType(name, "string")
     return Sound.channels[name]

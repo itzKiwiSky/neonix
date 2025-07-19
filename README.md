@@ -53,6 +53,7 @@ To tun the game on your machine, first, install LÖVE and download the project, 
 - [hump.timer - vrld](https://github.com/vrld/hump)
 - [Classic (Modified version)- rxi](https://github.com/rxi/classic)
 - [Lume - rxi](https://github.com/rxi/lume)
+- [AutoBatch (Modified) - rxi]()
 - [lua-discordRPC - pfirsich](https://github.com/pfirsich/lua-discordRPC)
 - [Knife.event - airstruck](https://github.com/airstruck/knife)
 - [collision - V3X3D](https://gitlab.com/V3X3D/love-libs)

@@ -156,15 +156,21 @@ function TitleState:update(elapsed)
 
     self.fogGlowFx:update(elapsed)
 
+    if Controller:pressed("ui_accept") then
+        if not self.enterPressed then
+            self.flash = 1
+            self.enterPressed = true
+        end
+    end
 end
 
 function TitleState:keypressed(k)
-    if k == "return" then
-        if not self.enterPressed then
-            self.enterPressed = true
-            self.flash = 1
-        end
-    end
+    --if k == "return" then
+    --    if not self.enterPressed then
+    --        self.enterPressed = true
+    --        self.flash = 1
+    --    end
+    --end
 end
 
 return TitleState

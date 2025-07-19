@@ -9,6 +9,8 @@ function SplashState:enter()
     self.fnt_logoText = fontcache.getFont("compaqthin", 25)
     self.fnt_loveLogo = fontcache.getFont("compaqthin", 18)
 
+    self.splashSkipped = false
+
     self.snd_logosnd = love.audio.newSource("assets/sounds/logoSplash.ogg", "static")
 
     self.kiwiLogoPos = {
@@ -72,19 +74,27 @@ function SplashState:draw()
 end
 
 function SplashState:update(elapsed)
-    self.splashTimer:update(elapsed)
+    if not self.splashSkipped then
+        self.splashTimer:update(elapsed)
 
-    self.logoMoveTween:update(elapsed)
-    self.logoTextMoveTween:update(elapsed)
+        self.logoMoveTween:update(elapsed)
+        self.logoTextMoveTween:update(elapsed)
 
-    self.fadeTween:update(elapsed)
-    self.loveLogoTween:update(elapsed)
+        self.fadeTween:update(elapsed)
+        self.loveLogoTween:update(elapsed)
+    end
+
+    if Controller:pressed("ui_accept") then
+        self.splashSkipped = true
+        gamestate.switch(TitleState)
+    end
 end
 
 function SplashState:leave()
     self.kiwiLogo:release()
     self.whaleLogo:release()
     self.snd_logosnd:release()
+    collectgarbage("collect")
 end
 
 return SplashState

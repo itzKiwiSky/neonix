@@ -3,7 +3,7 @@ LevelInfoState = {}
 function LevelInfoState:enter()
     self.viewManager = require 'src.Modules.System.Utils.ViewManager'
 
-    self.viewManager.load("src/Modules/Game/Views/Static/LevelInfo.lua")
+    self.viewManager.load("src/Modules/Game/Views/LevelInfo.lua")
 
     --self.song = SoundManager.newChannel("mainMenu")
     --self.song:loadSource("future_base")

@@ -83,20 +83,12 @@ function love.run()
 
     fontcache.init()
 
+    local jsonControls = love.filesystem.read("Controls.json")
+
     Controller = baton.new({
-        controls = {
-            ["jump"] = { "key:space", "key:z", "key:w", "key:up", "button:a" },
-            ["invert"] = { "key:return", "key:lshift", "key:rshift", "button:dpdown" },
-            ["ui_left"] = { "key:left", "key:a", "axis:leftx-" },
-            ["ui_right"] = { "key:left", "key:a", "axis:leftx+" },
-            ["ui_up"] = { "key:left", "key:a", "axis:lefty+" },
-            ["ui_down"] = { "key:left", "key:a", "axis:lefty-" },
-            ["ui_accept"] = { "key:return", "button:a" },
-            ["ui_back"] = { "key:escape", "key:backspace", "button:b" }
-        },
+        controls = json.decode(jsonControls),
         joystick = love.joystick.getJoysticks()[1],
     })
-
 
     local addons = fsutil.scanFolder("src/Modules/System/Addons")
     for a = 1, #addons, 1 do

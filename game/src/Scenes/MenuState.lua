@@ -216,22 +216,15 @@ function MenuState:draw()
                 selected and 1 or 0.4, 
             })
 
-            -- retângulo do item
-            --love.graphics.rectangle("fill", x - w / 2, y - h / 2, w, h, 10)
             love.graphics.draw(self.menuContent[i].icon, x, y, 0, scale, scale, self.menuContent[i].icon:getWidth() / 2, self.menuContent[i].icon:getHeight() / 2)
             love.graphics.setColor(1, 1, 1)
-            -- nome centralizado
-            --love.graphics.setColor(1, 1, 1)
-            --love.graphics.printf(self.menuContent[i].name, x - 100, y - 8, 200, "center")
         end
 
         love.graphics.printf(self.menuContent[self.scrollTarget + 1].title, self.f_optionDesc, 0, shove.getViewportHeight() - 200, shove.getViewportWidth(), "center")
 
-        --love.graphics.rectangle("fill", optionBoxX, shove.getViewportHeight() / 2 - 256 / 2, 256, 256, 15)
     self.menuCam:detach()
     
     love.graphics.print(self.scrollTarget, 32, 32)
-
     love.graphics.setColor(1, 1, 1, 1)
 end
 
@@ -245,20 +238,15 @@ function MenuState:update(elapsed)
     if self.enterCamAnimTransitionRunning then
         self.enterCamTweenGroup:update(elapsed)
     end
-end
 
-function MenuState:mousepressed(x, y, button)
-
-end
-
-function MenuState:keypressed(k)
-    if k == "right" then
+    if Controller:pressed("ui_right") then
         self.scrollTarget = math.min(#self.menuContent - 1, self.scrollTarget + 1)
-    elseif k == "left" then
+    elseif Controller:pressed("ui_left") then
         self.scrollTarget = math.max(0, self.scrollTarget - 1)
-    elseif k == "return" then
+    elseif Controller:pressed("ui_accept") then
         gamestate.push(self.menuContent[self.scrollTarget + 1].changeState)
     end
+
 end
 
 return MenuState

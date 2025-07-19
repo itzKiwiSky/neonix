@@ -1,5 +1,6 @@
 require('src.Modules.System.Run')
 local gitstuff = require 'src.Modules.System.GitStuff'  -- super important stuff --
+local initializeAPI = require 'src.Modules.System.InitializeAPI'
 
 local function preloadAudio(target)
     --local files = fsutil.scanFolder("assets/sounds/Tracks", false)
@@ -30,13 +31,11 @@ function love.initialize()
                 video = {
                     resolution = 1,
                     fullscreen = false,
-                    windowed = true,
                     vsync = false,
                     fpsCap = 200,
-                    antialiasing = true,
+                    filter = "nearest",
                 },
                 audio = {
-                    masterVolume = 75,
                     musicVolume = 50,
                     sfxVolume = 50,
                 },
@@ -79,6 +78,7 @@ function love.initialize()
         }
     }
 
+    --shove.updateWindowMode(width, height, flags)
 
     loveloader.start(function()
         AUDIO_LOADED = true
@@ -90,6 +90,8 @@ function love.initialize()
 
     gitstuff()      -- still super important --
 
+
+    initializeAPI()
 
     local languageManager = require 'src.Modules.System.Utils.LanguageManager'
     languageService = languageManager.getData(gameSave.save.user.settings.misc.language)

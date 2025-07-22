@@ -1,5 +1,9 @@
 {
     "__ENGINE__" : {},
+    "splash": {
+        "splash_photosensitive_warning_title" : "PHOTOSENSITIVE WARNING!",
+        "splash_photosensitive_warning_text" : "\n\nThis game contains flashing lights, some players may experience epileptic\n seizures when exposed to those patterns. If you feel any discomfort when playing\nplease stop playing immediately and consult a doctor."
+    },
     "menu" : {
         "selection" : {
             "menu_selection_title" : "Select mode",

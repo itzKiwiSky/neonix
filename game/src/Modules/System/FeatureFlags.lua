@@ -3,5 +3,6 @@
 local featureFlags = {}
 featureFlags.debug = not love.filesystem.isFused()   -- debug stuff will not appear on compiled games --
 featureFlags.videoStats = false
+featureFlags.captureScreenshot = true
 
 return featureFlags

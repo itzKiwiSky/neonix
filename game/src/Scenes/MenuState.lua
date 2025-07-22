@@ -156,7 +156,7 @@ function MenuState:enter()
             selected = false,
             sizeMulti = 0,
             textAlpha = 0,
-            changeState = EditorMenuState,
+            changeState = SettingsState,
             lock = {
                 locked = false,
                 alpha = 0,

@@ -1,6 +1,8 @@
 require('src.Modules.System.Run')
 local gitstuff = require 'src.Modules.System.GitStuff'  -- super important stuff --
 local initializeAPI = require 'src.Modules.System.InitializeAPI'
+discordRPC = require 'src.Modules.System.Utils.DiscordRPC'
+https = require 'https'
 
 local function preloadAudio(target)
     --local files = fsutil.scanFolder("assets/sounds/Tracks", false)
@@ -54,6 +56,7 @@ function love.initialize()
     gameSave:initialize()
 
     registers = {
+        isOnline = false,
         user = {
             roundStarted = false,
             paused = false,
@@ -91,7 +94,13 @@ function love.initialize()
     gitstuff()      -- still super important --
 
 
-    initializeAPI()
+    if gameSave.save.user.settings.misc.discordRichPresence then
+        initializeAPI()
+    end
+
+    -- check if you are online --
+    local code, body = https.request("https://www.google.com")
+    if code ~= 200 then registers.isOnline = false end -- just to disable some features if you're offline
 
     local languageManager = require 'src.Modules.System.Utils.LanguageManager'
     languageService = languageManager.getData(gameSave.save.user.settings.misc.language)
@@ -117,6 +126,7 @@ function love.initialize()
     love.filesystem.createDirectory("user/editor")
     love.filesystem.createDirectory("user/saved")
     love.filesystem.createDirectory("user/songs")
+    love.filesystem.createDirectory("screenshots")
 
     gamestate.registerEvents()
     gamestate.switch(LoadingState)
@@ -126,6 +136,19 @@ function love.keypressed(k)
     if k == "f11" then
         gamestate.switch(EditorState)
     end
+end
+
+-- some discord thing callbacks --
+function discordRPC.ready(userId, username, discriminator, avatar)
+    io.printf(string.format("{bgBlue}{brightBlue}{bold}[Discord]{reset}{brightBlue} : Client connected (%s, %s, %s){reset}\n", userId, username, discriminator))
+end
+
+function discordRPC.disconnected(errorCode, message)
+    io.printf(string.format("{bgBlue}{brightBlue}{bold}[Discord]{reset}{brightBlue} : Client disconnected (%d, %s){reset}\n", errorCode, message))
+end
+
+function discordRPC.errored(errorCode, message)
+    io.printf(string.format("{bgBlue}{brightBlue}{bold}[Discord]{reset}{bgRed}{brightWhite}[Error]{reset}{brightWhite} : (%d, %s){reset}\n", errorCode, message))
 end
 
 function love.quit()

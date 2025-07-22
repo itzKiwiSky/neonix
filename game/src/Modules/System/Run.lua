@@ -9,6 +9,7 @@ baton = require 'src.Modules.System.Utils.Baton'
 
 love._FPSCap = 1000
 love._unfocusedFPSCap = 60
+local flashOpacity = 0
 
 local oldGraphics = love.graphics
 love.graphics = require 'src.Modules.System.Utils.autobatch'
@@ -79,8 +80,6 @@ function love.run()
     package.cpath = newCPath
     copyLib()
 
-    discordRPC = require 'src.Modules.System.Utils.DiscordRPC'
-
     fontcache.init()
 
     local jsonControls = love.filesystem.read("Controls.json")
@@ -143,6 +142,11 @@ function love.run()
                             FEATURE_FLAGS.videoStats = not FEATURE_FLAGS.videoStats
                         end
                     end
+                    if FEATURE_FLAGS.captureScreenshot then
+                        if love.keyboard.isDown("lctrl") and a == "f1" then
+                            love.graphics.captureScreenshot("screenshots/" .. os.date("%Y-%m-%d_%H-%M-%S") .. ".png")
+                        end
+                    end
                 end
                 love.handlers[name](a,b,c,d,e,f)
             end
@@ -156,6 +160,7 @@ function love.run()
         end
 
         if love.update then 
+            flashOpacity = math.lerp(flashOpacity, 0, 0.075)
             love.update(elapsed)
             Controller:update()
         end
@@ -168,6 +173,12 @@ function love.run()
 
                 if love.draw then
                     love.draw()
+                end
+
+                if FEATURE_FLAGS.captureScreenshot then
+                    love.graphics.setColor(1, 1, 1, flashOpacity)
+                    love.graphics.rectangle("fill", 0, 0, shove.getViewportDimensions())
+                    love.graphics.setColor(1, 1, 1, 1)
                 end
 
                 love.graphics.print("FPS : " .. love.timer.getFPS(), fpsfont, 5, 5)

@@ -5,7 +5,6 @@ return function()
 
     discordRPC.initialize(jsonfile.discord.appid, true)
 
-
-    presence.largeImageKey = "editorhubbrowse"
+    presence.largeImageKey = "init_rpc"
     presence()
 end

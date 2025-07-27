@@ -1,0 +1,14 @@
+{
+    "meta" : {
+        "title" : "Level title",
+        "description" : "Simple description",
+        "username" : "username",
+        "gameversion" : 0,
+        "requestedDifficulty" : 0, // int range 1 -> 10
+        "song" : "ng:0000000"     // use protocol to download or use from internal
+    },
+    "data" : {
+        "bgColor": [0, 0, 0],
+        "timeline": []
+    }
+}

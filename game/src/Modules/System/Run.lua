@@ -80,6 +80,8 @@ function love.run()
     package.cpath = newCPath
     copyLib()
 
+    imgui = require 'src.Modules.System.Imgui'
+
     fontcache.init()
 
     local jsonControls = love.filesystem.read("Controls.json")

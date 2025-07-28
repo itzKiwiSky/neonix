@@ -13,35 +13,31 @@ local function _updateHitboxes(self)
 end
 
 function Cube.draw(self)
-    love.graphics.print("canJump " .. tostring(self.canJump) .. " " .. "yVelocity " .. tostring(self.yVelocity), 20, 20)
+    --love.graphics.print("canJump " .. tostring(self.canJump) .. " " .. "yVelocity " .. tostring(self.yVelocity), 20, 20)
     love.graphics.rectangle("line", self.x, self.y, self.w, self.h)
 end
 
 function Cube.update(self, elapsed)
-    --! HACK: TODO THIS SHIT WHEN I FIND A WAY TO MAKE THIS WORK !!!!! --
     if Controller:down("jump") then
         _jump(self)
     end
 
     self.super.update(self, elapsed)
 
-    if Controller:pressed("invert") then
-        self.direction = self.direction == "right" and "left" or "right"
+    if Controller:down("move_left") then
+        self.x = self.x - self.moveSpeed * elapsed
     end
-
-    --self.x = (self.direction == "right" and self.x + self.moveSpeed or self.x - self.moveSpeed) * elapsed
-
-    self.x = self.x + (self.direction == "right" and self.moveSpeed or -self.moveSpeed) * elapsed
+    if Controller:down("move_right") then
+        self.x = self.x + self.moveSpeed * elapsed
+    end 
 
     _updateHitboxes(self)
 
-    -- Increase the velocity using the gravity
     self.yVelocity = self.yVelocity + self.gravity * elapsed
 
-    -- Increase the y-position
     self.y = self.y + self.yVelocity * elapsed
 
-    -- some shit to not able to jump in the air --
+
     if self.last.y ~= self.y then
         self.canJump = false
     end

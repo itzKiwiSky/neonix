@@ -1,22 +1,42 @@
 PlayState = {}
 
 function PlayState:enter()
-    local player = require 'src.Modules.Game.Entities.Player'
-    local tile = require 'src.Modules.Game.Entities.Tile'
+    self.gameCam = camera(shove.getViewportWidth() / 2, shove.getViewportHeight() / 2)
+    self.Player = require 'src.Modules.Game.Entities.Player'
+    self.Tile = require 'src.Modules.Game.Entities.Tile'
+    self.Exploder = require 'src.Modules.Game.Entities.Hazards.Exploder'
 
     self.tiles = {}
     self.objects = {}
     
-    self.player = player:new(shove.getViewportWidth() / 2, shove.getViewportHeight() / 2)
-    --print(inspect.s)
-    table.insert(self.tiles, tile:new(128, shove.getViewportHeight() / 2 + 200, shove.getViewportWidth() - 256, 32))
+    self.player = self.Player:new(shove.getViewportWidth() / 2, shove.getViewportHeight() / 2)
+    table.insert(self.tiles, self.Tile:new(128, shove.getViewportHeight() / 2 + 200, shove.getViewportWidth() - 256, 32))
+
 end
 
 function PlayState:draw()
+    self.gameCam:attach(0, 0, shove.getViewportWidth(), shove.getViewportHeight(), true)
     self.player:draw()
     for i, v in ipairs(self.tiles) do
         v:draw()
     end
+
+    for i, v in ipairs(self.objects) do
+        if v.draw then
+            v:draw()
+        end
+    end
+
+    local viewportW = shove.getViewportWidth()
+    local viewportH = shove.getViewportHeight()
+    local viewLeft   = self.gameCam.x - viewportW / 2
+    local viewTop    = self.gameCam.y - viewportH / 2
+    local viewRight  = self.gameCam.x + viewportW / 2
+    local viewBottom = self.gameCam.y + viewportH / 2
+
+    love.graphics.rectangle("line", viewLeft, viewTop, viewRight, viewBottom)
+
+    self.gameCam:detach()
 end
 
 function PlayState:update(elapsed)
@@ -25,6 +45,9 @@ function PlayState:update(elapsed)
         v:update(elapsed)
     end
 
+    for i, v in ipairs(self.objects) do
+        v:update(elapsed)
+    end
     
     local loop = true
     local limit = 0
@@ -50,6 +73,22 @@ function PlayState:update(elapsed)
                 loop = true
             end
         end
+    end
+end
+
+function PlayState:keypressed(k)
+    if k == "g" then
+        table.insert(self.objects, 
+                self.Exploder:new(
+                math.random(-64, shove.getViewportWidth() + 128), 
+                math.random(-64, shove.getViewportHeight() + 128), 
+                math.random(128, shove.getViewportWidth() - 256), 
+                math.random(128, shove.getViewportHeight() - 256),
+                0.045, 3, 16
+            )
+        )
+    
+    --print(inspect(self.objects))
     end
 end
 

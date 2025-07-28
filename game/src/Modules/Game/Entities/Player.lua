@@ -3,6 +3,7 @@ local Player = Entity:extend()
 
 function Player:__construct(_x, _y)
     Player.super.__construct(self, _x, _y, 32, 32)
+    self.debugHitbox = true
 
     self.hitbox = {
         ["spikeBox"] = {
@@ -63,14 +64,29 @@ function Player:__construct(_x, _y)
 end
 
 function Player:draw()
-    love.graphics.rectangle(
-        "line", self.hitbox["spikeBox"].x, self.hitbox["spikeBox"].y,
-        self.hitbox["spikeBox"].w, self.hitbox["spikeBox"].h
-    )
-    love.graphics.rectangle(
-        "line", self.hitbox["actionBox"].x, self.hitbox["actionBox"].y,
-        self.hitbox["actionBox"].w, self.hitbox["actionBox"].h
-    )
+    if self.debugHitbox then
+        love.graphics.setColor(1, 0, 0, 0.5)
+        love.graphics.rectangle(
+            "fill", self.hitbox["spikeBox"].x, self.hitbox["spikeBox"].y,
+            self.hitbox["spikeBox"].w, self.hitbox["spikeBox"].h
+        )
+        love.graphics.setColor(1, 0, 0)
+        love.graphics.rectangle(
+            "line", self.hitbox["spikeBox"].x, self.hitbox["spikeBox"].y,
+            self.hitbox["spikeBox"].w, self.hitbox["spikeBox"].h
+        )
+        love.graphics.setColor(0, 0, 1, 0.5)
+        love.graphics.rectangle(
+            "fill", self.hitbox["actionBox"].x, self.hitbox["actionBox"].y,
+            self.hitbox["actionBox"].w, self.hitbox["actionBox"].h
+        )
+        love.graphics.setColor(0, 0, 1)
+        love.graphics.rectangle(
+            "line", self.hitbox["actionBox"].x, self.hitbox["actionBox"].y,
+            self.hitbox["actionBox"].w, self.hitbox["actionBox"].h
+        )
+        love.graphics.setColor(1, 1, 1, 1)
+    end
     if self.gamemodes[self.state].draw then
         self.gamemodes[self.state].draw(self)
     end

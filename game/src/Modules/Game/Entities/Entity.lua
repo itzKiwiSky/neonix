@@ -10,13 +10,21 @@ function Entity:__construct(_x, _y, _w, _h)
     self.last.x = self.x
     self.last.y = self.y
 
+    self.canDie = false
+    self.dead = false
+
     self.strength = 0
 end
 
 function Entity:update(elapsed)
-    -- We'll leave this empty for now.
-    self.last.x = self.x
-    self.last.y = self.y
+    if self:isOutOfViewport(PlayState.gameCam) and self.canDie then
+        self:kill()
+    end
+
+    if not self.dead then
+        self.last.x = self.x
+        self.last.y = self.y
+    end
 end
 
 function Entity:checkCollision(e)
@@ -79,6 +87,33 @@ function Entity:resolveCollision(e)
         return true
     end
     return false
+end
+
+function Entity:kill()
+    self.dead = true
+    for _, obj in ipairs(PlayState.objects) do
+        if obj.dead then
+            table.remove(PlayState.objects, _)
+        end
+    end
+end
+
+
+function Entity:isOutOfViewport(camera)
+    -- camera deve ter x, y (centro do viewport)
+    local viewportW = shove.getViewportWidth()
+    local viewportH = shove.getViewportHeight()
+    local viewLeft   = camera.x - viewportW / 2
+    local viewTop    = camera.y - viewportH / 2
+    local viewRight  = camera.x + viewportW / 2
+    local viewBottom = camera.y + viewportH / 2
+
+    return collision.rectRect(self,{
+        x = viewLeft,
+        y = viewTop,
+        w = viewRight,
+        h = viewBottom,
+    })
 end
 
 return Entity

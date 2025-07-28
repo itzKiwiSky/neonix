@@ -1,4 +1,5 @@
 require('src.Modules.System.Run')
+require('src.Modules.System.Utils.ErrHandler')
 local gitstuff = require 'src.Modules.System.GitStuff'  -- super important stuff --
 local initializeAPI = require 'src.Modules.System.InitializeAPI'
 discordRPC = require 'src.Modules.System.Utils.DiscordRPC'

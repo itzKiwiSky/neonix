@@ -1,6 +1,7 @@
 {
     "jump": ["key:space", "key:z", "key:w", "key:up", "button:a"],
-    "invert": ["key:return", "key:lshift", "key:rshift", "button:dpdown"],
+    "move_left": ["key:left", "key:a", "axis:leftx-"],
+    "move_right": ["key:right", "key:d", "axis:leftx+"],
     "ui_left": ["key:left", "key:a", "axis:leftx-"],
     "ui_right": ["key:right", "key:d", "axis:leftx+"],
     "ui_up": ["key:left", "key:a", "axis:lefty+"],

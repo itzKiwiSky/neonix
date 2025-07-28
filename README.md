@@ -53,7 +53,7 @@ To tun the game on your machine, first, install LÖVE and download the project, 
 - [hump.timer - vrld](https://github.com/vrld/hump)
 - [Classic (Modified version)- rxi](https://github.com/rxi/classic)
 - [Lume - rxi](https://github.com/rxi/lume)
-- [AutoBatch (Modified) - rxi]()
+- [AutoBatch (Modified) - rxi](https://github.com/rxi/autobatch/tree/master)
 - [lua-discordRPC - pfirsich](https://github.com/pfirsich/lua-discordRPC)
 - [Knife.event - airstruck](https://github.com/airstruck/knife)
 - [collision - V3X3D](https://gitlab.com/V3X3D/love-libs)
@@ -63,6 +63,7 @@ To tun the game on your machine, first, install LÖVE and download the project, 
 - [NPad93.Nanite - MikuAuahDark](https://github.com/MikuAuahDark/NPad93/blob/master/nanite.lua)
 - [LOVEDownloader - SNisin](https://github.com/kikito/love-loader)
 - [LoveZip - Rami-Sabbagh](https://github.com/Rami-Sabbagh/LoveZip)
+- [cimgui-love - apicici](https://codeberg.org/apicici/cimgui-love)
 
 And all the love2D community, you guys are awesome <3
 

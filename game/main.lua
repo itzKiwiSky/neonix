@@ -49,12 +49,28 @@ function love.initialize()
                         usertoken = ""
                     },
                     discordRichPresence = true,
+                },
+                controls = {
+                    ["jump"] = { "key:space", "key:z", "key:w", "key:up", "button:a" },
+                    ["move_left"] = { "key:left", "key:a", "axis:leftx-" },
+                    ["move_right"] = { "key:right", "key:d", "axis:leftx+" },
+                    ["ui_left"] = { "key:left", "key:a", "axis:leftx-" },
+                    ["ui_right"] = { "key:right", "key:d", "axis:leftx+" },
+                    ["ui_up"] = { "key:left", "key:a", "axis:lefty+" },
+                    ["ui_down"] = { "key:left", "key:a", "axis:lefty-" },
+                    ["ui_accept"] = { "key:return", "button:a", "button:start" },
+                    ["ui_back"] = { "key:escape", "key:backspace", "button:b" }
                 }
             }
         }
     }
 
     gameSave:initialize()
+
+    Controller = baton.new({
+        controls = gameSave.save.user.settings.controls,
+        joystick = love.joystick.getJoysticks()[1],
+    })
 
     registers = {
         isOnline = false,
@@ -93,7 +109,6 @@ function love.initialize()
     end)
 
     gitstuff()      -- still super important --
-
 
     if gameSave.save.user.settings.misc.discordRichPresence then
         initializeAPI()

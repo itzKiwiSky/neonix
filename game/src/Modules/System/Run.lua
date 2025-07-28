@@ -84,13 +84,6 @@ function love.run()
 
     fontcache.init()
 
-    local jsonControls = love.filesystem.read("Controls.json")
-
-    Controller = baton.new({
-        controls = json.decode(jsonControls),
-        joystick = love.joystick.getJoysticks()[1],
-    })
-
     local addons = fsutil.scanFolder("src/Modules/System/Addons")
     for a = 1, #addons, 1 do
         local ad = addons[a]:gsub(".lua", "")

@@ -164,6 +164,10 @@ function love.run()
             love.graphics.clear(love.graphics.getBackgroundColor())
             love.graphics.origin()
 
+            if love.preDraw then
+                love.preDraw()
+            end
+
             shove.beginDraw()
 
                 if love.draw then

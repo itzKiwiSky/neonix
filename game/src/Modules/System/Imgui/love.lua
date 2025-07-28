@@ -190,7 +190,7 @@ function L.SetShader(shader)
 end
 
 function L.Update(dt)
-    io.DisplaySize.x, io.DisplaySize.y = love.graphics.getDimensions()
+    io.DisplaySize.x, io.DisplaySize.y = shove.getViewportDimensions()--love.graphics.getDimensions()
     io.DeltaTime = dt
 
     if io.WantSetMousePos then
@@ -340,9 +340,14 @@ function L.RenderDrawLists()
                     mesh:setTexture(texture)
                 end
 
-                love.graphics.setScissor(clipX, clipY, clipW, clipH)
+                --love.graphics.setScissor(clipX, clipY, clipW, clipH)
+                love.graphics.stencil(function()
+                    love.graphics.rectangle("fill", clipX, clipY, clipW, clipH)
+                end, "replace", 1)
+                love.graphics.setStencilTest("greater", 0)
                 mesh:setDrawRange(cmd.IdxOffset + 1, cmd.ElemCount)
                 love.graphics.draw(mesh)
+                love.graphics.setStencilTest()
             end
         end
     end

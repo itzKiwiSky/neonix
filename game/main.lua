@@ -23,6 +23,8 @@ function love.initialize()
     SoundManager.sourceList = {}
     local save = require 'src.Modules.System.Utils.Save'
 
+    love.setDeprecationOutput(false)
+
     preloadAudio(SoundManager.sourceList)
 
     gameSave = save.new("game")
@@ -66,6 +68,7 @@ function love.initialize()
     }
 
     gameSave:initialize()
+    love.keyboard.setTextInput( true )
 
     Controller = baton.new({
         controls = gameSave.save.user.settings.controls,
@@ -149,8 +152,13 @@ function love.initialize()
 end
 
 function love.keypressed(k)
-    if k == "f11" then
-        gamestate.switch(EditorState)
+    if FEATURE_FLAGS.debug then
+        if k == "f11" then
+            gamestate.switch(EditorState)
+        end
+        if k == "f5" then
+            gamestate.switch(PlayState)
+        end
     end
 end
 
@@ -169,4 +177,5 @@ end
 
 function love.quit()
     discordRPC.shutdown()
+    imgui.love.Shutdown()
 end

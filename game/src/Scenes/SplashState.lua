@@ -55,7 +55,7 @@ function SplashState:update(elapsed)
         end
     end
     if self.splashState.state == self.STATE then
-        gamestate.switch(PlayState)
+        gamestate.switch(TitleState)
     end
 
 

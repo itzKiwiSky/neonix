@@ -80,7 +80,8 @@ function Neuron:initialize()
             end
         end
 
-        self.save = data
+
+        self.save = utils.merge(data)
     else
         if self.allowBackup then
             local backupFileSlot = love.filesystem.newFile("slots/" .. slotHashedName .. ".backup.neu", "w")

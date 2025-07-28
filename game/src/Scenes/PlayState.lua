@@ -6,11 +6,15 @@ function PlayState:enter()
     self.Tile = require 'src.Modules.Game.Entities.Tile'
     self.Exploder = require 'src.Modules.Game.Entities.Hazards.Exploder'
 
+    self.assets = {
+        ["platform"] = love.graphics.newImage("assets/images/game/platform.png")
+    }
+
     self.tiles = {}
     self.objects = {}
     
     self.player = self.Player:new(shove.getViewportWidth() / 2, shove.getViewportHeight() / 2)
-    table.insert(self.tiles, self.Tile:new(128, shove.getViewportHeight() / 2 + 200, shove.getViewportWidth() - 256, 32))
+    self.platformTile = self.Tile:new(128, shove.getViewportHeight() / 2 + 200, shove.getViewportWidth() - 256, 32)
 
 end
 
@@ -20,6 +24,9 @@ function PlayState:draw()
     for i, v in ipairs(self.tiles) do
         v:draw()
     end
+
+    self.platformTile:draw()
+    love.graphics.draw(self.assets["platform"], self.platformTile.x, self.platformTile.y, 0, self.platformTile.w / self.assets["platform"]:getWidth())
 
     for i, v in ipairs(self.objects) do
         if v.draw then
@@ -61,14 +68,14 @@ function PlayState:update(elapsed)
         end
 
         for _, b in ipairs(self.tiles) do
-            local c = b:resolveCollision(self.player)
+            local c = b:resolveCollision(self.player) or self.platformTile:resolveCollision(self.player)
             if c then
                 loop = true
             end
         end
 
         for _, b in ipairs(self.tiles) do
-            local c = self.player:resolveCollision(b)
+            local c = self.player:resolveCollision(b) or self.player:resolveCollision(self.platformTile)
             if c then
                 loop = true
             end

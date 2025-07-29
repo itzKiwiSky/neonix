@@ -1,19 +1,17 @@
-PlayState = {}
-PlayState.isEditor = false
-PlayState.assets = {}
-PlayState.tiles = {}
-PlayState.objects = {}
+PlayViewport = {}
+PlayViewport.assets = {}
+PlayViewport.tiles = {}
+PlayViewport.objects = {}
 
-function PlayState:init()
-    self.conductor = require 'src.Modules.Game.Conductor'
+function PlayViewport:init()
     self.Player = require 'src.Modules.Game.Entities.Player'
     self.Tile = require 'src.Modules.Game.Entities.Tile'
     self.Exploder = require 'src.Modules.Game.Entities.Hazards.Exploder'
-    self.viewport = love.graphics.newCanvas(shove.getViewportDimensions())
+    self.canvas = love.graphics.newCanvas(shove.getViewportDimensions())
     self.gameCam = camera(shove.getViewportWidth() / 2, shove.getViewportHeight() / 2)
 end
 
-function PlayState:enter()
+function PlayViewport:reset()
     for _, rsc in ipairs(self.assets) do
         rsc:release()
     end
@@ -27,8 +25,7 @@ function PlayState:enter()
 
 end
 
-function PlayState:draw()
-    if PlayState.isEditor then love.graphics.setCanvas(self.viewport) end
+function PlayViewport:draw()
     self.gameCam:attach(0, 0, shove.getViewportWidth(), shove.getViewportHeight(), true)
     self.player:draw()
     for i, v in ipairs(self.tiles) do
@@ -54,10 +51,9 @@ function PlayState:draw()
     love.graphics.rectangle("line", viewLeft, viewTop, viewRight, viewBottom)
 
     self.gameCam:detach()
-    if PlayState.isEditor then love.graphics.setCanvas() end
 end
 
-function PlayState:update(elapsed)
+function PlayViewport:update(elapsed)
     self.player:update(elapsed)
     for i, v in ipairs(self.tiles) do
         v:update(elapsed)
@@ -74,8 +70,12 @@ function PlayState:update(elapsed)
         loop = false
 
         limit = limit + 1
-        if limit > 50 then
+        if limit > 100 then
             break
+        end
+
+        if self.platformTile:resolveCollision(self.player) or self.player:resolveCollision(self.platformTile) then
+            loop = true
         end
 
         for i = 1,#self.objects - 1, 1 do
@@ -95,14 +95,10 @@ function PlayState:update(elapsed)
                 end
             end
         end
-
-        if self.platformTile:resolveCollision(self.player) or self.player:resolveCollision(self.platformTile) then
-            loop = true
-        end
     end
 end
 
-function PlayState:keypressed(k)
+function PlayViewport:keypressed(k)
     if k == "g" then
         table.insert(self.objects, 
                 self.Exploder:new(
@@ -117,5 +113,4 @@ function PlayState:keypressed(k)
     --print(inspect(self.objects))
     end
 end
-
-return PlayState
+return PlayViewport

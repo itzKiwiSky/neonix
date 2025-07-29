@@ -11,9 +11,9 @@ end
 function Bullet:draw()
     if self.dead then return end
 
-    love.graphics.setColor(1, 0, 0)
-    love.graphics.rectangle("line", self.last.x, self.last.y, self.w, self.h)
-    love.graphics.setColor(1, 1, 1, 1)
+    --love.graphics.setColor(1, 0, 0)
+    --love.graphics.rectangle("line", self.last.x, self.last.y, self.w, self.h)
+    --love.graphics.setColor(1, 1, 1, 1)
     love.graphics.rectangle("line", self.x, self.y, self.w, self.h)
 end
 

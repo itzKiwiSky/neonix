@@ -52,83 +52,26 @@ local function _selectAt(this, x, y)
     end
 end
 
+function EditorState:init()
+    PlayState:init()
+end
+
 function EditorState:enter()
-    imgui.love.Init()
+    PlayState:enter()
 end
 
 function EditorState:draw()
-    --selectable version
-    imgui.ShowDemoWindow()
-    
-    -- code to render imgui
-    imgui.Render()
-    imgui.love.RenderDrawLists()
+    PlayState:draw()
+    love.graphics.draw(PlayState.viewport, 0, 0, 0, 0.25 * PlayState.viewport:getWidth())
 end
 
 function EditorState:update(elapsed)
-    imgui.love.Update(elapsed)
-    imgui.NewFrame()
+    PlayState:update(elapsed)
 end
 
-
-function EditorState:mousemoved(x, y, ...)
-    local inside, vx, vy = shove.mouseToViewport()
-    imgui.love.MouseMoved(vx, vy)
-    if not imgui.love.GetWantCaptureMouse() then
-        -- your code here
-    end
+function EditorState:keypressed(k)
+    PlayState:keypressed(k)
 end
 
-
-function EditorState:mousepressed(x, y, button, ...)
-    imgui.love.MousePressed(button)
-    if not imgui.love.GetWantCaptureMouse() then
-        -- your code here 
-    end
-end
-
-
-function EditorState:mousereleased(x, y, button, ...)
-    imgui.love.MouseReleased(button)
-    if not imgui.love.GetWantCaptureMouse() then
-        -- your code here 
-    end
-end
-
-
-function EditorState:wheelmoved(x, y)
-    imgui.love.WheelMoved(x, y)
-    if not imgui.love.GetWantCaptureMouse() then
-        -- your code here 
-    end
-end
-
-
-function EditorState:keypressed(k, ...)
-    imgui.love.KeyPressed(k)
-    if not imgui.love.GetWantCaptureKeyboard() then
-        -- your code here 
-    end
-end
-
-
-function EditorState:keyreleased(k, ...)
-    imgui.love.KeyReleased(k)
-    if not imgui.love.GetWantCaptureKeyboard() then
-        -- your code here 
-    end
-end
-
-function EditorState:focus(f)
-    imgui.love.Focus(f)
-end
-
-
-function EditorState:textinput(t)
-    imgui.love.TextInput(t)
-    if imgui.love.GetWantCaptureKeyboard() then
-        -- your code here 
-    end
-end
 
 return EditorState

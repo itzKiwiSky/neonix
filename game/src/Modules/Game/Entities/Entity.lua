@@ -1,3 +1,4 @@
+local PlayView = require 'src.Scenes.Subscenes.PlayViewport'
 local Entity = class:extend()
 
 function Entity:__construct(_x, _y, _w, _h)
@@ -17,10 +18,6 @@ function Entity:__construct(_x, _y, _w, _h)
 end
 
 function Entity:update(elapsed)
-    if self:isOutOfViewport(PlayState.gameCam) and self.canDie then
-        self:kill()
-    end
-
     if not self.dead then
         self.last.x = self.x
         self.last.y = self.y
@@ -30,6 +27,7 @@ end
 function Entity:checkCollision(e)
     -- e will be the other entity with which we check if there is collision.
     -- This is the final compact version from chapter 13
+    if self.dead then return false end
     return self.x + self.w > e.x
     and self.x < e.x + e.w
     and self.y + self.h > e.y
@@ -49,6 +47,8 @@ function Entity:wasHorizontallyAligned(e)
 end
 
 function Entity:collide(e, direction)
+    if self.dead then return end
+
     if direction == "right" then
         local pushback = self.x + self.w - e.x
         self.x = self.x - pushback
@@ -65,6 +65,8 @@ function Entity:collide(e, direction)
 end
 
 function Entity:resolveCollision(e)
+    if self.dead then return end
+
     if self.strength > e.strength then
         return e:resolveCollision(self)
     end
@@ -91,22 +93,17 @@ end
 
 function Entity:kill()
     self.dead = true
-    for _, obj in ipairs(PlayState.objects) do
-        if obj.dead then
-            table.remove(PlayState.objects, _)
-        end
-    end
 end
 
 
-function Entity:isOutOfViewport(camera)
+function Entity:isOutOfViewport()
     -- camera deve ter x, y (centro do viewport)
     local viewportW = shove.getViewportWidth()
     local viewportH = shove.getViewportHeight()
-    local viewLeft   = camera.x - viewportW / 2
-    local viewTop    = camera.y - viewportH / 2
-    local viewRight  = camera.x + viewportW / 2
-    local viewBottom = camera.y + viewportH / 2
+    local viewLeft   = PlayState.gameCam.x - viewportW / 2
+    local viewTop    = PlayState.gameCam.y - viewportH / 2
+    local viewRight  = PlayState.gameCam.x + viewportW / 2
+    local viewBottom = PlayState.gameCam.y + viewportH / 2
 
     return collision.rectRect(self,{
         x = viewLeft,

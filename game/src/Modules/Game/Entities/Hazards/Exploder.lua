@@ -13,20 +13,17 @@ function Exploder:__construct(x, y, targetX, targetY, speed, prepareTime, bullet
 end
 
 function Exploder:draw()
-    if self.dead then return end
+    if self.exploded then return end
     love.graphics.rectangle("fill", self.x, self.y, self.w, self.h)
 end
 
 
 function Exploder:update(elapsed)
-    Exploder.super.update(self, elapsed)
     self.x = math.lerp(self.x, self.targetX, self.speed)
     self.y = math.lerp(self.y, self.targetY, self.speed)
     self.prepareTime = self.prepareTime - elapsed
     if self.prepareTime < 0 and not self.exploded then
         self.exploded = true
-        self.canDie = true
-        self.dead = true
         -- explode: criar balas em círculo --
         local bullets = {}
         local angleStep = (2 * math.pi) / self.bulletCount
@@ -39,6 +36,7 @@ function Exploder:update(elapsed)
         end
         --self.bulletsSpawned = bullets -- só para debug, remova se não precisar
     end
+    Exploder.super.update(self, elapsed)
 end
 
 return Exploder

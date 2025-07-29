@@ -80,7 +80,7 @@ function love.run()
     package.cpath = newCPath
     copyLib()
 
-    imgui = require 'src.Modules.System.Imgui'
+    --imgui = require 'src.Modules.System.Imgui'
 
     fontcache.init()
 
@@ -107,9 +107,13 @@ function love.run()
     math.randomseed(os.time())
 
     -- Initialize Shöve with fixed game resolution and options
-    shove.setResolution(1280, 768, { fitMethod = "aspect" })
+    shove.setResolution(1280, 768, { fitMethod = "aspect", renderMode = "layer" })
     -- Set up a resizable window
     shove.setWindowMode(1440, 900, {resizable = true, vsync = false})
+
+    shove.createLayer("mainView")
+    shove.createLayer("effects")
+    shove.createLayer("fps")
 
     local fpsfont = love.graphics.newFont(16)
 
@@ -155,7 +159,6 @@ function love.run()
         end
 
         if love.update then 
-            flashOpacity = math.lerp(flashOpacity, 0, 0.075)
             love.update(elapsed)
             Controller:update()
         end
@@ -164,35 +167,28 @@ function love.run()
             love.graphics.clear(love.graphics.getBackgroundColor())
             love.graphics.origin()
 
-            if love.preDraw then
-                love.preDraw()
-            end
-
             shove.beginDraw()
 
-                if love.draw then
-                    love.draw()
-                end
-
-                if FEATURE_FLAGS.captureScreenshot then
-                    love.graphics.setColor(1, 1, 1, flashOpacity)
-                    love.graphics.rectangle("fill", 0, 0, shove.getViewportDimensions())
-                    love.graphics.setColor(1, 1, 1, 1)
-                end
-
-                love.graphics.print("FPS : " .. love.timer.getFPS(), fpsfont, 5, 5)
-
-                if FEATURE_FLAGS.videoStats then
-                    local strs = {}
-                    for k = 1, #love.keys.videoStats, 1 do
-                        local st = love.keys.videoStats[k] .. " = " .. love.graphics.getStats()[love.keys.videoStats[k]]
-                        if love.keys.videoStats[k] == "texturememory" then
-                            st = love.keys.videoStats[k] .. " = " .. string.format("%.2f mb", love.graphics.getStats()["texturememory"] / 1024 / 1024)
-                        end
-                        strs[k] = st
+                shove.beginLayer("mainView")
+                    if love.draw then
+                        love.draw()
                     end
-                    love.graphics.print(table.concat(strs, "\n"), fpsfont, 5, 20)
-                end
+                shove.endLayer()
+
+                shove.beginLayer("fps")
+                    love.graphics.print("FPS : " .. love.timer.getFPS(), fpsfont, 5, 5)
+                    if FEATURE_FLAGS.videoStats then
+                        local strs = {}
+                        for k = 1, #love.keys.videoStats, 1 do
+                            local st = love.keys.videoStats[k] .. " = " .. love.graphics.getStats()[love.keys.videoStats[k]]
+                            if love.keys.videoStats[k] == "texturememory" then
+                                st = love.keys.videoStats[k] .. " = " .. string.format("%.2f mb", love.graphics.getStats()["texturememory"] / 1024 / 1024)
+                            end
+                            strs[k] = st
+                        end
+                        love.graphics.print(table.concat(strs, "\n"), fpsfont, 5, 20)
+                    end
+                shove.endLayer()
             shove.endDraw()
             love.graphics.present()
         end

@@ -177,5 +177,4 @@ end
 
 function love.quit()
     discordRPC.shutdown()
-    imgui.love.Shutdown()
 end

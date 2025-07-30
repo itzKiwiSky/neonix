@@ -64,6 +64,10 @@ function PlayState:update(elapsed)
     self.platformTile:resolveCollision(self.player)
     self.player:resolveCollision(self.platformTile)
 
+    if not self.player:isOutOfViewport() then
+        self.player.x, self.player.y = shove.getViewportWidth() / 2, shove.getViewportHeight() / 2
+    end
+
     for i, v in ipairs(self.objects) do
         v:update(elapsed)
     end

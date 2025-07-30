@@ -22,26 +22,26 @@
 
 ---@class nanite
 local nanite = {
-	_VERSION = "1.0.0",
-	_AUTHOR = "Miku AuahDark",
-	_LICENSE = "MIT"
+    _VERSION = "1.0.0",
+    _AUTHOR = "Miku AuahDark",
+    _LICENSE = "MIT"
 }
 ---@private
 nanite.__index = nanite
 
 ---@param x number
 local function linear(x)
-	return x
+    return x
 end
 
 ---@param a number
 ---@param b number
 local function minmax(a, b)
-	if a > b then
-		return b, a
-	else
-		return a, b
-	end
+    if a > b then
+        return b, a
+    else
+        return a, b
+    end
 end
 
 -- `loadstring` is not available in script environment, upvalue it out.
@@ -76,309 +76,309 @@ local loadstring = loadstring
 ---@param source table
 ---@param timelines nanite.Timeline[]?
 function nanite:new(source, timelines)
-	---@private
-	---@type nanite.SimplifiedTimeline[]
-	self.timeline = {}
-	---@type table<string,nanite.SimplifiedTimeline>
-	---@private
-	self.timelineLookup = {}
-	---@private
-	self.duration = 0
-	---@private
-	self.time = 0
-	---@private
-	self.globalEnvironment = nil
-	---@private
-	self.variableInCheck = nil
-	---@private
-	self.source = source
+    ---@private
+    ---@type nanite.SimplifiedTimeline[]
+    self.timeline = {}
+    ---@type table<string,nanite.SimplifiedTimeline>
+    ---@private
+    self.timelineLookup = {}
+    ---@private
+    self.duration = 0
+    ---@private
+    self.time = 0
+    ---@private
+    self.globalEnvironment = nil
+    ---@private
+    self.variableInCheck = nil
+    ---@private
+    self.source = source
 
-	for _, v in ipairs(timelines or {}) do
-		self:_add(v, false)
-	end
+    for _, v in ipairs(timelines or {}) do
+        self:_add(v, false)
+    end
 
-	self:_resolveTime()
+    self:_resolveTime()
 end
 
 ---@param timeline nanite.Timeline
 function nanite:add(timeline)
-	return self:_add(timeline, true)
+    return self:_add(timeline, true)
 end
 
 ---Update animation timeline. Both positive and negative `dt` is supported.
 ---@param dt number
 function nanite:update(dt)
-	local oldTime = self.time
-	---@private
-	self.time = math.min(math.max(self.time + dt, 0), self.duration)
+    local oldTime = self.time
+    ---@private
+    self.time = math.min(math.max(self.time + dt, 0), self.duration)
 
-	for _, v in ipairs(self.timeline) do
-		local update = true
+    for _, v in ipairs(self.timeline) do
+        local update = true
 
-		if v.inArea then
-			if self.time >= (v.start + v.duration) then
-				v.inArea = false
-			elseif self.time < v.start then
-				v.inArea = false
-			end
-		elseif self.time >= v.start and self.time < (v.start + v.duration) then
-			v.inArea = true
-		else
-			local start, stop = minmax(oldTime, self.time)
-			-- Handle case where dt is larger than duration
-			if start < v.start and stop >= (v.start + v.duration) then
-				-- no-op
-			else
-				-- Out of range, don't update
-				update = false
-			end
-		end
+        if v.inArea then
+            if self.time >= (v.start + v.duration) then
+                v.inArea = false
+            elseif self.time < v.start then
+                v.inArea = false
+            end
+        elseif self.time >= v.start and self.time < (v.start + v.duration) then
+            v.inArea = true
+        else
+            local start, stop = minmax(oldTime, self.time)
+            -- Handle case where dt is larger than duration
+            if start < v.start and stop >= (v.start + v.duration) then
+                -- no-op
+            else
+                -- Out of range, don't update
+                update = false
+            end
+        end
 
-		if update then
-			local relativeTime, relativeOldTime = self.time - v.start, oldTime - v.start
-			---@diagnostic disable-next-line: param-type-mismatch
-			local newdt = math.min(math.max(relativeTime, 0), v.duration) - math.min(math.max(relativeOldTime, 0), v.duration)
-			local m = math.min(math.max(relativeTime / v.duration, 0), 1)
+        if update then
+            local relativeTime, relativeOldTime = self.time - v.start, oldTime - v.start
+            ---@diagnostic disable-next-line: param-type-mismatch
+            local newdt = math.min(math.max(relativeTime, 0), v.duration) - math.min(math.max(relativeOldTime, 0), v.duration)
+            local m = math.min(math.max(relativeTime / v.duration, 0), 1)
 
-			for _, var in ipairs(v.variableList) do
-				local value
-				-- Guarante values
-				if m <= 0 then
-					value = var.start
-				elseif m >= 1 then
-					value = var.finish
-				else
-					local t = var.easing(m)
-					value = var.start * (1 - t) + var.finish * t
-				end
+            for _, var in ipairs(v.variableList) do
+                local value
+                -- Guarante values
+                if m <= 0 then
+                    value = var.start
+                elseif m >= 1 then
+                    value = var.finish
+                else
+                    local t = var.easing(m)
+                    value = var.start * (1 - t) + var.finish * t
+                end
 
-				self.source[var.name] = value
-			end
+                self.source[var.name] = value
+            end
 
-			for _, updateHook in ipairs(v.updateHook) do
-				updateHook(v.userdata, newdt)
-			end
-		end
-	end
+            for _, updateHook in ipairs(v.updateHook) do
+                updateHook(v.userdata, newdt)
+            end
+        end
+    end
 
-	return self.time <= 0 or self.time >= self.duration
+    return self.time <= 0 or self.time >= self.duration
 end
 
 ---@param timeline nanite.Timeline
 ---@param resolveNow boolean
 ---@private
 function nanite:_add(timeline, resolveNow)
-	-- Normalize interpolated variables
-	---@type nanite.SimplifiedTimeline
-	local t = {
-		id = timeline.id,
-		start = timeline.start,
-		stop = timeline.stop,
-		duration = timeline.duration,
-		updateHook = {},
-		userdata = timeline.userdata,
-		resolved = false,
-		parent = self,
-		variableList = {},
-		inArea = false,
-	}
+    -- Normalize interpolated variables
+    ---@type nanite.SimplifiedTimeline
+    local t = {
+        id = timeline.id,
+        start = timeline.start,
+        stop = timeline.stop,
+        duration = timeline.duration,
+        updateHook = {},
+        userdata = timeline.userdata,
+        resolved = false,
+        parent = self,
+        variableList = {},
+        inArea = false,
+    }
 
-	if timeline.id then
-		assert(type(timeline.id) == "string", "timeline identifier must be string")
-		assert(timeline.id:match("^[A-Za-z_][A-Za-z0-9_]*$"), "timeline identifier is not a valid identifier")
+    if timeline.id then
+        assert(type(timeline.id) == "string", "timeline identifier must be string")
+        assert(timeline.id:match("^[A-Za-z_][A-Za-z0-9_]*$"), "timeline identifier is not a valid identifier")
 
-		-- Ensure it's not been taken
-		if self.timelineLookup[timeline.id] then
-			error("variable \""..timeline.id.."\" has been taken")
-		end
+        -- Ensure it's not been taken
+        if self.timelineLookup[timeline.id] then
+            error("variable \""..timeline.id.."\" has been taken")
+        end
 
-		if self.globalEnvironment then
-			self.globalEnvironment[t.id] = t
-		end
+        if self.globalEnvironment then
+            self.globalEnvironment[t.id] = t
+        end
 
-		self.timelineLookup[timeline.id] = t
-	end
+        self.timelineLookup[timeline.id] = t
+    end
 
-	if (timeline.duration and timeline.stop) or ((not timeline.duration) and (not timeline.stop)) then
-		error("duration and stop time is mutually exclusive")
-	end
+    if (timeline.duration and timeline.stop) or ((not timeline.duration) and (not timeline.stop)) then
+        error("duration and stop time is mutually exclusive")
+    end
 
-	local easing = timeline.easing or linear
-	self.timeline[#self.timeline + 1] = t
+    local easing = timeline.easing or linear
+    self.timeline[#self.timeline + 1] = t
 
-	if timeline.updateHook then
-		for _, v in ipairs(timeline.updateHook) do
-			t.updateHook[#t.updateHook + 1] = v
-		end
-	end
+    if timeline.updateHook then
+        for _, v in ipairs(timeline.updateHook) do
+            t.updateHook[#t.updateHook + 1] = v
+        end
+    end
 
-	for key, value in pairs(timeline.variables) do
-		if type(key) == "string" then
-			---@cast value number
-			t.variableList[#t.variableList + 1] = {
-				name = key,
-				easing = easing,
-				start = self.source[key],
-				finish = value
-			}
-		else
-			---@cast value table<string,number>
-			for name, value2 in pairs(value) do
-				t.variableList[#t.variableList + 1] = {
-					name = name,
-					easing = key,
-					start = self.source[name],
-					finish = value2
-				}
-			end
-		end
-	end
+    for key, value in pairs(timeline.variables) do
+        if type(key) == "string" then
+            ---@cast value number
+            t.variableList[#t.variableList + 1] = {
+                name = key,
+                easing = easing,
+                start = self.source[key],
+                finish = value
+            }
+        else
+            ---@cast value table<string,number>
+            for name, value2 in pairs(value) do
+                t.variableList[#t.variableList + 1] = {
+                    name = name,
+                    easing = key,
+                    start = self.source[name],
+                    finish = value2
+                }
+            end
+        end
+    end
 
-	if resolveNow then
-		self:_resolveVariable(t)
-		self:_updateStart(t)
-	end
+    if resolveNow then
+        self:_resolveVariable(t)
+        self:_updateStart(t)
+    end
 end
 
 ---@private
 function nanite:_resolveTime()
-	for _, v in ipairs(self.timeline) do
-		self:_resolveVariable(v)
-	end
+    for _, v in ipairs(self.timeline) do
+        self:_resolveVariable(v)
+    end
 
-	for _, v in ipairs(self.timeline) do
-		self:_updateStart(v)
-	end
+    for _, v in ipairs(self.timeline) do
+        self:_updateStart(v)
+    end
 end
 
 ---@param simplified nanite.SimplifiedTimeline
 ---@private
 function nanite:_resolveVariable(simplified)
-	if simplified.resolved then return end
+    if simplified.resolved then return end
 
-	if type(simplified.start) == "string" then
-		simplified.start = self:_runFormula(simplified, simplified.start)
-	end
+    if type(simplified.start) == "string" then
+        simplified.start = self:_runFormula(simplified, simplified.start)
+    end
 
-	if type(simplified.stop) == "string" then
-		simplified.stop = self:_runFormula(simplified, simplified.stop)
-	end
+    if type(simplified.stop) == "string" then
+        simplified.stop = self:_runFormula(simplified, simplified.stop)
+    end
 
-	if type(simplified.duration) == "string" then
-		simplified.duration = self:_runFormula(simplified, simplified.duration)
-	end
+    if type(simplified.duration) == "string" then
+        simplified.duration = self:_runFormula(simplified, simplified.duration)
+    end
 
-	if simplified.stop then
-		-- Convert to duration
-		simplified.duration = simplified.stop - simplified.start
-		simplified.stop = nil
-	end
+    if simplified.stop then
+        -- Convert to duration
+        simplified.duration = simplified.stop - simplified.start
+        simplified.stop = nil
+    end
 
-	simplified.resolved = true
+    simplified.resolved = true
 
-	-- Update max duration
-	---@private
-	self.duration = math.max(self.duration, simplified.start + simplified.duration)
+    -- Update max duration
+    ---@private
+    self.duration = math.max(self.duration, simplified.start + simplified.duration)
 end
 
 ---@param a nanite.SimplifiedTimeline
 ---@param b nanite.SimplifiedTimeline
 ---@private
 function nanite._sortByEndTime(a, b)
-	return (a.start + a.duration) > (b.start + b.duration)
+    return (a.start + a.duration) > (b.start + b.duration)
 end
 
 ---@param timeline nanite.SimplifiedTimeline
 ---@private
 function nanite:_updateStart(timeline)
-	---@type nanite.SimplifiedTimeline[]
-	local temp = {}
+    ---@type nanite.SimplifiedTimeline[]
+    local temp = {}
 
-	-- Insert with less end time
-	for _, v in ipairs(self.timeline) do
-		if v ~= timeline and (v.start + v.duration) <= timeline.start then
-			temp[#temp + 1] = v
-		end
-	end
+    -- Insert with less end time
+    for _, v in ipairs(self.timeline) do
+        if v ~= timeline and (v.start + v.duration) <= timeline.start then
+            temp[#temp + 1] = v
+        end
+    end
 
-	-- Sort
-	table.sort(temp, nanite._sortByEndTime)
+    -- Sort
+    table.sort(temp, nanite._sortByEndTime)
 
-	for _, var in ipairs(timeline.variableList) do
-		local found = false
+    for _, var in ipairs(timeline.variableList) do
+        local found = false
 
-		for _, tl in ipairs(temp) do
-			for _, tlvar in ipairs(tl.variableList) do
-				if tlvar.name == var.name then
-					var.start = tlvar.finish
-					found = true
-					break
-				end
-			end
+        for _, tl in ipairs(temp) do
+            for _, tlvar in ipairs(tl.variableList) do
+                if tlvar.name == var.name then
+                    var.start = tlvar.finish
+                    found = true
+                    break
+                end
+            end
 
-			if found then
-				break
-			end
-		end
+            if found then
+                break
+            end
+        end
 
-		if not found then
-			var.start = self.source[var.name]
-		end
-	end
+        if not found then
+            var.start = self.source[var.name]
+        end
+    end
 end
 
 ---@private
 function nanite:_initScriptEnv()
-	if not self.globalEnvironment then
-		local env = {}
-		env._G = env
-		---@cast env +mathlib
+    if not self.globalEnvironment then
+        local env = {}
+        env._G = env
+        ---@cast env +mathlib
 
-		for k, v in pairs(math) do
-			env[k] = v
-		end
+        for k, v in pairs(math) do
+            env[k] = v
+        end
 
-		-- emit random, randomseed, and huge
-		env.random = nil
-		env.randomseed = nil
-		env.huge = nil
-		env.assert = assert
+        -- emit random, randomseed, and huge
+        env.random = nil
+        env.randomseed = nil
+        env.huge = nil
+        env.assert = assert
 
-		-- add our script-specific functions
-		for k, v in pairs(nanite.scriptEnv) do
-			env[k] = v
-		end
+        -- add our script-specific functions
+        for k, v in pairs(nanite.scriptEnv) do
+            env[k] = v
+        end
 
-		-- add timeline variables
-		for k, v in pairs(self.timelineLookup) do
-			env[k] = v
-		end
+        -- add timeline variables
+        for k, v in pairs(self.timelineLookup) do
+            env[k] = v
+        end
 
-		---@private
-		self.globalEnvironment = env
-		---@type table<nanite.SimplifiedTimeline,boolean>
-		---@private
-		self.variableInCheck = {}
-	end
+        ---@private
+        self.globalEnvironment = env
+        ---@type table<nanite.SimplifiedTimeline,boolean>
+        ---@private
+        self.variableInCheck = {}
+    end
 end
 
 ---@param variable nanite.SimplifiedTimeline
 ---@param formula string
 ---@private
 function nanite:_runFormula(variable, formula)
-	self:_initScriptEnv()
+    self:_initScriptEnv()
 
-	-- Check for cyclic
-	assert(not self.variableInCheck[variable], "cyclic reference detected")
-	self.variableInCheck[variable] = true
-	---@type fun():number
-	local chunk = assert(loadstring("return "..formula, formula))
-	setfenv(chunk, self.globalEnvironment)
-	local result = assert(chunk(), "missing return value")
-	assert(type(result) == "number", "invalid return value")
-	self.variableInCheck[variable] = false
+    -- Check for cyclic
+    assert(not self.variableInCheck[variable], "cyclic reference detected")
+    self.variableInCheck[variable] = true
+    ---@type fun():number
+    local chunk = assert(loadstring("return "..formula, formula))
+    setfenv(chunk, self.globalEnvironment)
+    local result = assert(chunk(), "missing return value")
+    assert(type(result) == "number", "invalid return value")
+    self.variableInCheck[variable] = false
 
-	return result
+    return result
 end
 
 ---@private
@@ -386,32 +386,32 @@ nanite.scriptEnv = {}
 
 ---@param name nanite.SimplifiedTimeline?
 function nanite.scriptEnv.start(name)
-	assert(name, "variable is not defined")
-	---@diagnostic disable-next-line: invisible
-	name.parent:_resolveVariable(name)
-	return name.start
+    assert(name, "variable is not defined")
+    ---@diagnostic disable-next-line: invisible
+    name.parent:_resolveVariable(name)
+    return name.start
 end
 
 ---@param name nanite.SimplifiedTimeline?
 function nanite.scriptEnv.duration(name)
-	assert(name, "variable is not defined")
-	---@diagnostic disable-next-line: invisible
-	name.parent:_resolveVariable(name)
-	return name.duration
+    assert(name, "variable is not defined")
+    ---@diagnostic disable-next-line: invisible
+    name.parent:_resolveVariable(name)
+    return name.duration
 end
 
 ---@param name nanite.SimplifiedTimeline?
 function nanite.scriptEnv.finish(name)
-	assert(name, "variable is not defined")
-	---@diagnostic disable-next-line: invisible
-	name.parent:_resolveVariable(name)
-	return name.start + name.duration
+    assert(name, "variable is not defined")
+    ---@diagnostic disable-next-line: invisible
+    name.parent:_resolveVariable(name)
+    return name.start + name.duration
 end
 
 setmetatable(nanite, {__call = function(_, source, timelines)
-	local object = setmetatable({}, nanite)
-	object:new(source, timelines)
-	return object
+    local object = setmetatable({}, nanite)
+    object:new(source, timelines)
+    return object
 end})
 ---@cast nanite +fun(source:table,timelines:nanite.Timeline[]):nanite
 

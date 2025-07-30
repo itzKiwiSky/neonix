@@ -538,10 +538,10 @@
        inkscape:export-filename="lock.png"
        inkscape:export-xdpi="96"
        inkscape:export-ydpi="96">
-	
-	
-	
-	<g
+    
+    
+    
+    <g
    id="g2"
    style="opacity:0.719165;mix-blend-mode:normal;filter:url(#filter18)"><path
      fill="#231f20"
@@ -653,11 +653,11 @@
        transform="matrix(0.51319572,0,0,0.51324023,124.62183,124.61056)"
        inkscape:label="Trophy"
        style="display:none;stroke-width:1.53322">
-	
-	
-	
-	
-	<path
+    
+    
+    
+    
+    <path
    id="path15-7"
    style="display:none;mix-blend-mode:normal;fill:#ff7551;fill-opacity:1;stroke-width:1.53322;filter:url(#filter15)"
    class="st0"
@@ -1099,9 +1099,9 @@
      sodipodi:insensitive="true" /><style
      type="text/css"
      id="style1">
-	.st0{fill:#000000;}
+    .st0{fill:#000000;}
 </style><style
      type="text/css"
      id="style1-8">
-	.st0{fill:#000000;}
+    .st0{fill:#000000;}
 </style></svg>

@@ -317,10 +317,10 @@ end
         code, status = h:receivestatusline()
     end
     headers = h:receiveheaders()
-	
-	if nreqt.headerCallback then 																	-- MODIFICATION
-		nreqt.headerCallback(headers) 
-	end
+    
+    if nreqt.headerCallback then                                                                     -- MODIFICATION
+        nreqt.headerCallback(headers) 
+    end
     -- at this point we should have a honest reply from the server
     -- we can't redirect if we already used the source, so we report the error 
     if shouldredirect(nreqt, code, headers) and not nreqt.source then

@@ -1,9 +1,7 @@
 return 
 {
-    ["dubnix"] = {
-        bpm = 122
+    ["flow"] = {
+        bpm = 122,
+        author = "Creo"
     },
-    ["blindblade"] = {
-        bpm = 128,
-    }
 }

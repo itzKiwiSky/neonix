@@ -14,7 +14,7 @@ function PlayState:init()
 end
 
 function PlayState:enter()
-    for _, rsc in ipairs(self.assets) do
+    for k, rsc in pairs(self.assets) do
         rsc:release()
     end
 
@@ -29,13 +29,14 @@ end
 
 function PlayState:draw()
     if PlayState.isEditor then love.graphics.setCanvas(self.viewport) end
+    if PlayState.isEditor then love.graphics.clear() end
     self.gameCam:attach(0, 0, shove.getViewportWidth(), shove.getViewportHeight(), true)
     self.player:draw()
     for i, v in ipairs(self.tiles) do
         v:draw()
     end
 
-    self.platformTile:draw()
+    --self.platformTile:draw()
     love.graphics.draw(self.assets["platform"], self.platformTile.x, self.platformTile.y, 0, self.platformTile.w / self.assets["platform"]:getWidth())
 
     for i, v in ipairs(self.objects) do
@@ -59,9 +60,9 @@ end
 
 function PlayState:update(elapsed)
     self.player:update(elapsed)
-    for i, v in ipairs(self.tiles) do
-        v:update(elapsed)
-    end
+
+    self.platformTile:resolveCollision(self.player)
+    self.player:resolveCollision(self.platformTile)
 
     for i, v in ipairs(self.objects) do
         v:update(elapsed)
@@ -78,27 +79,12 @@ function PlayState:update(elapsed)
             break
         end
 
-        for i = 1,#self.objects - 1, 1 do
-            for j = i + 1,#self.objects, 1 do
-                local collision = self.objects[i]:resolveCollision(self.objects[j])
-                if collision then
-                    loop = true
-                end
+        for _, b in ipairs(self.objects) do
+            if b:resolveCollision(self.player) or self.player:resolveCollision(b) then
+                loop = true
             end
         end
 
-        for i,wall in ipairs(self.tiles) do
-            for j,object in ipairs(self.objects) do
-                local collision = object:resolveCollision(wall)
-                if collision then
-                    loop = true
-                end
-            end
-        end
-
-        if self.platformTile:resolveCollision(self.player) or self.player:resolveCollision(self.platformTile) then
-            loop = true
-        end
     end
 end
 
@@ -116,6 +102,14 @@ function PlayState:keypressed(k)
     
     --print(inspect(self.objects))
     end
+end
+
+function PlayState:leave()
+    for k, rsc in pairs(self.assets) do
+        rsc:release()
+    end
+
+    self.viewport:release()
 end
 
 return PlayState

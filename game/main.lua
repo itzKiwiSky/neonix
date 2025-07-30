@@ -1,9 +1,9 @@
 require('src.Modules.System.Run')
+love.filesystem.load("src/Modules/System/Run.lua")()
 require('src.Modules.System.Utils.ErrHandler')
 local gitstuff = require 'src.Modules.System.GitStuff'  -- super important stuff --
 local initializeAPI = require 'src.Modules.System.InitializeAPI'
-discordRPC = require 'src.Modules.System.Utils.DiscordRPC'
-https = require 'https'
+
 
 local function preloadAudio(target)
     --local files = fsutil.scanFolder("assets/sounds/Tracks", false)
@@ -163,6 +163,7 @@ function love.keypressed(k)
 end
 
 -- some discord thing callbacks --
+--[[
 function discordRPC.ready(userId, username, discriminator, avatar)
     io.printf(string.format("{bgBlue}{brightBlue}{bold}[Discord]{reset}{brightBlue} : Client connected (%s, %s, %s){reset}\n", userId, username, discriminator))
 end
@@ -174,7 +175,7 @@ end
 function discordRPC.errored(errorCode, message)
     io.printf(string.format("{bgBlue}{brightBlue}{bold}[Discord]{reset}{bgRed}{brightWhite}[Error]{reset}{brightWhite} : (%d, %s){reset}\n", errorCode, message))
 end
-
+]]--
 function love.quit()
     discordRPC.shutdown()
 end

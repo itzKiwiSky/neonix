@@ -41,6 +41,7 @@ end
 -- copy all the need libraries for game to work --
 local function copyLib()
     love.filesystem.createDirectory("bin")
+    print("clone")
 
     if love.system.getOS() == "Windows" then
         local dlf = love.filesystem.getDirectoryItems("assets/bin/win")
@@ -80,7 +81,11 @@ function love.run()
     package.cpath = newCPath
     copyLib()
 
+    discordRPC = require 'src.Modules.System.Utils.DiscordRPC'
+    https = require 'https'
+
     --imgui = require 'src.Modules.System.Imgui'
+
 
     fontcache.init()
 

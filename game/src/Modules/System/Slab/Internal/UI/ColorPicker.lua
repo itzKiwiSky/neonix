@@ -157,7 +157,7 @@ local function InitializeSaturationMeshes()
                     }
                 }
 
-                local NewMesh = love.graphics.newMesh(Verts)
+                local NewMesh = love.graphics.newMesh(Verts, "fan")
                 insert(SaturationMeshes, NewMesh)
 
                 X = X + Size
@@ -215,7 +215,7 @@ local function InitializeTintMeshes()
                 }
             }
 
-            local NewMesh = love.graphics.newMesh(Verts)
+            local NewMesh = love.graphics.newMesh(Verts, "fan")
             insert(TintMeshes, NewMesh)
 
             Y = Y + TintH / Step
@@ -248,7 +248,7 @@ local function InitializeAlphaMesh()
             }
         }
 
-        AlphaMesh = love.graphics.newMesh(Verts)
+        AlphaMesh = love.graphics.newMesh(Verts, "fan")
     end
 end
 

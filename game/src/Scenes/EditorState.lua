@@ -6,6 +6,12 @@ end
 
 function EditorState:enter()
     Slab.Initialize({"NoDocks"})
+    Slab.LoadStyle("Pinky")
+
+    self.menubar = require 'src.Modules.Game.Editor.Menubar'
+    self.timeline = require 'src.Modules.Game.Editor.Timeline'
+
+    SlabDebug = require 'src.Modules.System.Slab.SlabDebug'
 
     PlayState.isEditor = true
     PlayState:enter()
@@ -20,32 +26,16 @@ function EditorState:draw()
     love.graphics.draw(PlayState.viewport, prevX, 0, 0, 0.5, 0.5)
     love.graphics.rectangle("line", prevX, 0, PlayState.viewport:getWidth() * 0.5, PlayState.viewport:getHeight() * 0.5)
     Slab.Draw()
-    PlayState:draw()
+    --PlayState:draw()
 end
 
 function EditorState:update(elapsed)
     PlayState:update(elapsed)
     Slab.Update(elapsed)
 
-    if Slab.BeginMainMenuBar() then
-        if Slab.BeginMenu("File") then
-            Slab.MenuItem("New level")
-
-            Slab.MenuItem("Open")
-            Slab.MenuItem("Save")
-            Slab.MenuItem("Save As")
-
-            Slab.Separator()
-
-            if Slab.MenuItem("Quit") then
-                love.event.quit()
-            end
-
-            Slab.EndMenu()
-        end
-
-        Slab.EndMainMenuBar()
-    end
+    SlabDebug.StyleEditor()
+    self.menubar()
+    --self.timeline()
 end
 
 function EditorState:keypressed(k)

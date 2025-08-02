@@ -55,7 +55,7 @@ local Menu = require(SLAB_PATH .. '.Internal.UI.Menu')
 local MenuState = require(SLAB_PATH .. '.Internal.UI.MenuState')
 local MenuBar = require(SLAB_PATH .. '.Internal.UI.MenuBar')
 local Region = require(SLAB_PATH .. '.Internal.UI.Region')
-local Separator = require(SLAB_PATH .. '.Internal.UI.Separator')
+local Separator = require(SLAB_PATH .. '.Internal.UI.Separator') 
 local Shape = require(SLAB_PATH .. '.Internal.UI.Shape')
 local Stats = require(SLAB_PATH .. '.Internal.Core.Stats')
 local Style = require(SLAB_PATH .. '.Style')
@@ -63,6 +63,7 @@ local Text = require(SLAB_PATH .. '.Internal.UI.Text')
 local Tree = require(SLAB_PATH .. '.Internal.UI.Tree')
 local Utility = require(SLAB_PATH .. '.Internal.Core.Utility')
 local Window = require(SLAB_PATH .. '.Internal.UI.Window')
+local Scale = require(SLAB_PATH .. ".Internal.Core.Scale")
 
 --[[
     Slab
@@ -2548,6 +2549,18 @@ end
 ]]
 function Slab.ToLoveFile(Source)
     return FileSystem.ToLove(Source)
+end
+
+function Slab.GetScale()
+    return Scale.GetScale()
+end
+
+function Slab.GetScreenWidth()
+    return Scale.GetScreenWidth()
+end
+
+function Slab.GetScreenHeight()
+    return Scale.GetScreenHeight()
 end
 
 return Slab

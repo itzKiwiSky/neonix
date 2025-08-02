@@ -7,6 +7,7 @@ class = require 'src.Modules.System.Utils.Classic'
 gamejolt = require 'src.Modules.System.Utils.Gamejolt'
 baton = require 'src.Modules.System.Utils.Baton'
 Slab = require 'src.Modules.System.Slab'
+ecs = require 'src.Modules.System.ECS'
 
 love._FPSCap = 1000
 love._unfocusedFPSCap = 60

@@ -30,6 +30,10 @@ function Player:__construct(_x, _y)
 
     self.canJump = false
     self.flipped = false
+    self.life = 5
+    self.isImmune = false
+    self._immuneTime = 3
+    self._immuneTimeMax = 3
 
     -- asset stuff --
 
@@ -94,6 +98,14 @@ end
 
 function Player:update(elapsed)
     --Player.super.update(self, elapsed)
+    if self.isImmune then
+        self._immuneTime = self._immuneTime - elapsed
+        if self._immuneTime < 0 then
+            self._immuneTime = self._immuneTimeMax
+            self.isImmune = false
+        end
+    end
+
     if self.gamemodes[self.state].update then
         self.gamemodes[self.state].update(self, elapsed)
     end
@@ -111,6 +123,13 @@ function Player:keypressed(k)
     if self.gamemodes[self.state].keypressed then
         self.gamemodes[self.state].keypressed(self, k)
     end
+end
+
+function Player:hurt()
+    if self.isImmune then return end
+
+    self.life = self.life - 1
+    self.isImmune = true
 end
 
 return Player

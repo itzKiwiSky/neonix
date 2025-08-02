@@ -86,9 +86,6 @@ function love.run()
     discordRPC = require 'src.Modules.System.Utils.DiscordRPC'
     https = require 'https'
 
-    --imgui = require 'src.Modules.System.Imgui'
-
-
     fontcache.init()
 
     local addons = fsutil.scanFolder("src/Modules/System/Addons")
